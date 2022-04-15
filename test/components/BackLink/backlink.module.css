@@ -1,0 +1,10 @@
+.l1 {
+    color: rgb(125, 28, 152);
+    font-weight: lighter;
+}
+
+.l1:hover{
+    cursor: pointer;
+    color: black;
+    transition: 0.5s;
+}
