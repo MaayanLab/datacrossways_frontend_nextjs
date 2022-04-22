@@ -23,7 +23,7 @@ export default function Home() {
         </h1>
         <br/>
         <br/>
-        <Link  href="/login">
+        <Link  href="/signin">
           <Button>Go to login</Button>
         </Link>
         <br/>

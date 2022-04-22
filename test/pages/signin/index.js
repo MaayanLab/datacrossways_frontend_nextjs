@@ -2,17 +2,18 @@ import Link from 'next/link'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../../styles/Home.module.css'
-import mystyles from './login.module.css'
+import mystyles from './signin.module.css'
 
 import GoogleButton from '../../components/GoogleButton'
 import BackLink from '../../components/BackLink'
 
-export default function Login() {
+
+export default function Signin() {
 
     return (
         <div className={styles.container}>
             <Head>
-                <title>Login</title>
+                <title>Signin</title>
                 <meta name="description" content="Do what you want!" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
