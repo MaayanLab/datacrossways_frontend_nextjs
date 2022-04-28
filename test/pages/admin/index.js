@@ -11,6 +11,7 @@ import UserTable from '../../components/UserTable'
 import UserEdit from '../../components/UserEdit'
 import Loading from '../../components/Loading';
 import Alert from '../../components/Alert'
+import FileTable from '../../components/FileTable';
 
 export default function AdminView() {
     let init_state = {"message": "Admin mode", "type": "success"}
@@ -18,11 +19,8 @@ export default function AdminView() {
     const [users, setUsers] = React.useState()
     useAsyncEffect(async (isActive) => {
         const res = await fetch('http://localhost:5000/api/listusers')
-        console.log(res)
         if (!isActive()) return
         const users = await res.json()
-        console.log(users)
-        console.log("error" in users)
         if (!isActive()) return
         setUsers({ users })
     }, [])
@@ -47,17 +45,17 @@ export default function AdminView() {
                 <h1>You are admin and logged in successfully, here are some things you can do</h1>
 
                 <ul>
-                    <li>List users</li>
-                    <li>Create User</li>
-                    <li>List files</li>
-                    <li>Modify User Roles</li>
-                    <li>Create New Roles</li>
-                    <li>Create Projects</li>
+                    <li key="1">List users</li>
+                    <li key="2">Create User</li>
+                    <li key="3">List files</li>
+                    <li key="4">Modify User Roles</li>
+                    <li key="5">Create New Roles</li>
+                    <li key="6">Create Projects</li>
                 </ul >
                 <hr />
                 <Alert message={popupMessage}/>
 
-                <Accordion defaultActiveKey="0" flush>
+                <Accordion defaultActiveKey="1" flush>
                     <Accordion.Item eventKey="0">
                         <Accordion.Header><h3>Users in Database</h3></Accordion.Header>
                         <Accordion.Body>
@@ -65,13 +63,14 @@ export default function AdminView() {
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="1">
-                        <Accordion.Header><h3>Edit User</h3></Accordion.Header>
+                        <Accordion.Header><h3>Files</h3></Accordion.Header>
                         <Accordion.Body>
                             <div>
-                                <UserEdit user={users["users"][0]} />
+                                <FileTable/>
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>
+
                 </Accordion>
 
             </div >

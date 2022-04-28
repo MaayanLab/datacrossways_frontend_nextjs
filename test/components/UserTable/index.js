@@ -30,7 +30,6 @@ const UserTable = ({ users }) => {
         
         user.roles = []
         for(let r in mystate.roles){
-            console.log(r)
             if(mystate.roles[r]){
                 user.roles.push(r)
             }
@@ -43,9 +42,7 @@ const UserTable = ({ users }) => {
         updated_user["affiliation"] = user.affiliation 
         updated_user["email"] = user.email
         updated_user["roles"] = user.newroles
-
-        console.log(JSON.stringify(updated_user))
-
+        
         const options = {
             method: 'POST',
             body: JSON.stringify(updated_user),

@@ -13,7 +13,7 @@
     box-shadow: 0 0 1px 5px rgba(128, 254, 176, 0.2);
     border: 1px solid rgb(101, 238, 168);
     color: rgb(0, 130, 63);
-    font-weight: 600;
+    font-weight: 500;
 
     animation: slide-left 600ms forwards, fade-in 500ms forwards;
 }

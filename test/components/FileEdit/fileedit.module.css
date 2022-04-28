@@ -1,0 +1,43 @@
+
+.ff{
+   
+}
+
+.ff input{
+    width: 435px;
+    padding: 9px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
+
+.ff input:hover{
+    border: 1px solid rgb(206, 0, 225);
+    background-color: rgb(244, 230, 255);
+    transition: 0.3s;
+}
+
+.list{
+    width: 440px;
+    font-weight: bold;
+}
+
+.checkwrapper {
+    width: 120px;
+    display: flex;
+}
+
+.lab {
+    background-color: #fff;
+    color: #000;
+    padding: 6px 6px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 4px;
+    cursor: pointer;
+}
+
+.check input{
+    width: 16px;
+}
