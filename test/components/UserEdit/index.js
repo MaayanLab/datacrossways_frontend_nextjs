@@ -35,7 +35,7 @@ const UserEdit = ({ user }) => {
   const [currentRoles, setCurrentRoles] = React.useState([]);
 
   useAsyncEffect(async (isActive) => {
-    const res = await fetch("http://localhost:5000/api/listroles");
+    const res = await fetch("http://localhost:5000/api/role");
     if (!isActive()) return;
     const roles = await res.json();
     if (!isActive()) return;

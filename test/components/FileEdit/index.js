@@ -52,12 +52,12 @@ const FileEdit = ({ file }) => {
 
   useEffect(() => {
     const fetchCollections = async () => {
-      const res = await fetch("http://localhost:5000/api/listcollections");
+      const res = await fetch("http://localhost:5000/api/collection");
       setCollections(await res.json());
     };
 
     const fetchOwners = async () => {
-      const res = await fetch("http://localhost:5000/api/listusers");
+      const res = await fetch("http://localhost:5000/api/user");
       setOwners(await res.json());
     };
 

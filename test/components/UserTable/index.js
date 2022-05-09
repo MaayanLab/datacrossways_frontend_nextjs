@@ -36,7 +36,7 @@ const UserTable = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("http://localhost:5000/api/listusers");
+      const res = await fetch("http://localhost:5000/api/user");
       const users = await res.json();
       setUsers(users);
       setUser(users[0]);
@@ -73,14 +73,14 @@ const UserTable = () => {
     updated_user["roles"] = user.roles;
 
     const options = {
-      method: "POST",
+      method: "PATCH",
       body: JSON.stringify(updated_user),
       headers: {
         "Content-Type": "application/json",
       },
     };
 
-    fetch("http://localhost:5000/api/updateuser", options)
+    fetch("http://localhost:5000/api/user", options)
       .then((res) => res.json())
       .then((res) => {
         user.roles = [];
