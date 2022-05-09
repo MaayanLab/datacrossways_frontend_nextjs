@@ -2,6 +2,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
+import React from 'react'
+
 import Link from 'next/link'
 
 import Button from '../components/Button'
@@ -21,6 +23,7 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to <a href="https://nextjs.org">DataCrossways!</a>
         </h1>
+        <h2>Current version is {React.version}</h2>
         <br/>
         <br/>
         <Link  href="/signin">

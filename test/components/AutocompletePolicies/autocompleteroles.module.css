@@ -1,0 +1,16 @@
+.select{
+    width: 200px;
+}
+.select{
+    width:440px;
+}
+
+.togglebutton{
+    position: absolute;
+    margin: -15px;
+    background-color: aqua;
+}
+
+.small{
+    color: grey;
+}

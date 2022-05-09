@@ -1,9 +1,8 @@
 import DataTable from "react-data-table-component";
-import styles from "./datatable.module.css";
+import styles from "./datatableusers.module.css";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLock, faLockOpen, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
-
 
 // https://github.com/jbetancur/react-data-table-component/blob/master/src/DataTable/styles.ts
 const customStyles = {
@@ -41,7 +40,7 @@ const customStyles = {
   },
 };
 
-function Datatable({ files, handleShow, editFile }) {
+function DatatableUsers({ users, handleShow, editUser }) {
 
     const columns = [
         {
@@ -51,9 +50,14 @@ function Datatable({ files, handleShow, editFile }) {
           maxWidth: "20px",
         },
         {
-          name: "Display Name",
+          name: "First Name",
           sortable: true,
-          selector: (row) => row.display_name,
+          selector: (row) => row.first_name,
+        },
+        {
+          name: "Last Name",
+          sortable: true,
+          selector: (row) => row.last_name,
         },
         {
           name: "UUID",
@@ -62,41 +66,10 @@ function Datatable({ files, handleShow, editFile }) {
           maxWidth: "140px",
         },
         {
-          name: "Owner",
+          name: "E-mail",
           sortable: true,
-          selector: (row) => row.owner_name,
-        },
-        {
-          name: "status",
-          sortable: true,
-          selector: (row) => row.status,
-          maxWidth: "120px",
-        },
-        {
-          name: "Visibility",
-          sortable: true,
-          selector: (row) => {
-            if(row.visibility == "hidden"){
-              return (<FontAwesomeIcon className={styles.aiconred} icon={faEyeSlash} />)
-            }
-            else{
-              return (<FontAwesomeIcon className={styles.aicongreen} icon={faEye} />)
-            }
-          },
-          maxWidth: "20px",
-        },
-        {
-          name: "Access",
-          sortable: true,
-          selector: (row) => {
-            if(row.accessibility == "locked"){
-              return (<FontAwesomeIcon className={styles.aiconred} icon={faLock} />)
-            }
-            else{
-              return (<FontAwesomeIcon className={styles.aicongreen} icon={faLockOpen} />)
-            }
-          },
-          maxWidth: "20px",
+          selector: (row) => row.uuid,
+          maxWidth: "140px",
         },
         {
           name: "Date",
@@ -112,11 +85,11 @@ function Datatable({ files, handleShow, editFile }) {
             <div>
               <button
                 onClick={() => {
-                  editFile(row);
+                  editUser(row);
                   handleShow();
                 }}
               >
-                Edit File
+                Edit User
               </button>
             </div>
           ),
@@ -129,7 +102,7 @@ function Datatable({ files, handleShow, editFile }) {
         className={styles.table}
         striped
         columns={columns}
-        data={files}
+        data={users}
         customStyles={customStyles}
         pagination
         defaultSortField="ID"
@@ -138,4 +111,4 @@ function Datatable({ files, handleShow, editFile }) {
   );
 }
 
-export default Datatable;
+export default DatatableUsers;

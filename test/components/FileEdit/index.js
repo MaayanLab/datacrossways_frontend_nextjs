@@ -6,72 +6,63 @@ import Row from "react-bootstrap/Row";
 import "bootstrap/dist/css/bootstrap.css";
 
 import Loading from "../Loading";
-import Autocomplete from "./../Autocomplete";
+import AutocompleteCollections from "../AutocompleteCollections";
+import AutocompleteOwners from "../AutocompleteOwners";
+import AutocompleteRoles from "../AutocompleteRoles";
 
 import Switch from "react-switch";
 
 const FileEdit = ({ file }) => {
-  const [visibility, setVisibility] = useState(false);
-  const [access, setAccess] = useState(false);
-  const [roles, setRoles] = useState(false);
-  const [roleNames, setRoleNames] = useState(false);
 
+  var init_state = (file.visibility==="hidden") ? false : true;
+  const [visibility, setVisibility] = useState(init_state);
+  
+  var init_state = (file.accessibility==="locked") ? false : true;
+  const [access, setAccess] = useState(init_state);
+
+  const [owners, setOwners] = useState([]);
   const [collections, setCollections] = useState([]);
-  const [collectionNames, setCollectionNames] = useState([]);
-
 
   const handleName = (event) => {
     file.display_name = event.target.value;
     console.log(file)
   };
 
-  const handleOwner = (event) => {
-    file.owner_id = event.target.value;
+  const handleVisibility = (e) => {
+    setVisibility(e);
+    file.visibility = (e) ? 'visible' : 'hidden';
   };
 
-  const handleVisibility = () => {
-    setVisibility(!visibility);
-    console.log(visibility);
-    if(!visibility) file.visibility = "visible";
-    else file.visibility = "hidden";
+  const handleAccess = (e) => {
+    setAccess(e);
+    file.accessibility = (e) ? 'open' : 'locked';
   };
 
-  const handleAccess = () => {
-    setAccess(!access);
-    if(!access) file.accessibility = "open";
-    else file.accessibility = "locked";
+  const handleOwnerSelect = (data) => {
+    if(data.length > 0 && data[0] != true){
+      file.owner_id = data[0].id;
+    }
   };
 
   const handleCollectionSelect = (data) => {
-    setCollections(data[0]);
-    file.collection = data[0];
+    if(data.length > 0 && data[0] != true){
+      file.collection_id = data[0].id;
+    }
   };
 
   useEffect(() => {
-    const fetchRoles = async () => {
-      const res = await fetch("http://localhost:5000/api/listroles");
-      const roles_res = await res.json();
-      setRoles(roles_res);
-      let short_roles = [];
-      roles_res.map((role) => {
-        short_roles.push(role.name);
-      });
-      setRolesNames(short_roles);
-    };
-
     const fetchCollections = async () => {
       const res = await fetch("http://localhost:5000/api/listcollections");
-      const collections_res = await res.json();
-      setCollections(collections_res);
-      let short_collections = [];
-      collections_res.map((collection) => {
-        short_collections.push(collection.name);
-      });
-      setCollectionNames(short_collections);
+      setCollections(await res.json());
     };
 
-    //fetchRoles();
+    const fetchOwners = async () => {
+      const res = await fetch("http://localhost:5000/api/listusers");
+      setOwners(await res.json());
+    };
+
     fetchCollections();
+    fetchOwners();
   }, []);
 
   return (
@@ -79,7 +70,7 @@ const FileEdit = ({ file }) => {
       <Container>
         <form className={styles.ff}>
           <Row>
-            <Col>
+            <Col className={[styles.form_item, styles.form_i1]}>
               <label>
                 Display name
                 <br />
@@ -87,38 +78,31 @@ const FileEdit = ({ file }) => {
                   type="text"
                   name="field1"
                   placeholder="Display name"
-                  defaultValue={file.name}
+                  defaultValue={file.display_name}
                   onChange={handleName}
                 />
               </label>
             </Col>
-            <Col>
+            <Col className={[styles.form_item, styles.form_i2]}>
               <label>
                 Owner
-                <br />
-                <input
-                  type="text"
-                  name="field2"
-                  placeholder="Owner"
-                  defaultValue={file.owner}
-                  onChange={handleOwner}
-                />
+                <br/>
+                <AutocompleteOwners currentOwner={file.owner_id} options={owners} callback={handleOwnerSelect}/>
               </label>
             </Col>
           </Row>
 
           <Row>
-            <Col>
+            <Col className={[styles.form_item, styles.form_i3]}>
               <label>
                 Collection
                 <br />
-                <Autocomplete options={collectionNames} callback={handleCollectionSelect}/>
-                Add collection options from dropdown. Potentially allow creating
-                new collection option?
+                <AutocompleteCollections currentCollection={file.collection_id} options={collections} callback={handleCollectionSelect}/>
               </label>
             </Col>
-
-            <Col>
+          </Row>
+          <Row>
+            <Col className={[styles.form_item, styles.form_i4]}>
               <label>
                 Visibility
                 <br />

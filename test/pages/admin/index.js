@@ -17,24 +17,7 @@ export default function AdminView() {
     let init_state = {"message": "Admin mode", "type": "success"}
     const [popupMessage, setPopupMessages] = React.useState(init_state)
     const [users, setUsers] = React.useState()
-    useAsyncEffect(async (isActive) => {
-        const res = await fetch('http://localhost:5000/api/listusers')
-        if (!isActive()) return
-        const users = await res.json()
-        if (!isActive()) return
-        setUsers({ users })
-    }, [])
-    if (users === undefined) return <Loading />
 
-    if ("error" in users["users"]) {
-        return (
-            <>
-                <div>You need to be admin to use this page.</div>
-                <Link href="\signin">Go back</Link>
-            </>
-        )
-    }
-    else {
         return (
             <div className={styles.container}>
                 <Head>
@@ -55,11 +38,12 @@ export default function AdminView() {
                 <hr />
                 <Alert message={popupMessage}/>
 
-                <Accordion defaultActiveKey="1" flush>
+                <Accordion defaultActiveKey="2" flush>
                     <Accordion.Item eventKey="0">
                         <Accordion.Header><h3>Users in Database</h3></Accordion.Header>
                         <Accordion.Body>
-                            <UserTable users={users["users"]} />
+                            {/* <UserTable users={users["users"]} /> */}
+                            <UserTable/>
                         </Accordion.Body>
                     </Accordion.Item>
                     <Accordion.Item eventKey="1">
@@ -70,10 +54,16 @@ export default function AdminView() {
                             </div>
                         </Accordion.Body>
                     </Accordion.Item>
-
+                    <Accordion.Item eventKey="2">
+                        <Accordion.Header><h3>Access Control</h3></Accordion.Header>
+                        <Accordion.Body>
+                            <div>
+                                List roles/create roles/create policies
+                            </div>
+                        </Accordion.Body>
+                    </Accordion.Item>
                 </Accordion>
-
             </div >
         )
-    }
+
 }

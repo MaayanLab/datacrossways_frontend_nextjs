@@ -1,5 +1,26 @@
+@keyframes slide_left {
+    0% {
+        transform: translateX(20%);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    40% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 .ff{
-   
+
 }
 
 .ff input{
@@ -39,4 +60,33 @@
 
 .check input{
     width: 16px;
+}
+
+.loading{
+    height: 410px;
+}
+
+.form_item{
+    opacity: 0;
+    animation: fadeIn 600ms forwards, slide_left 600ms forwards;
+}
+
+.form_i1 {
+
+}
+
+.form_i2 {
+    animation-delay: 0.1s;
+}
+
+.form_i3 {
+    animation-delay: 0.2s;
+}
+
+.form_i4 {
+    animation-delay: 0.3s;
+}
+
+.form_i5 {
+    animation-delay: 0.4s;
 }
