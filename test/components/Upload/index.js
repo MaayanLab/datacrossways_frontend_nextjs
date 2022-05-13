@@ -4,8 +4,6 @@ import "bootstrap/dist/css/bootstrap.css";
 
 import axios from "axios";
 
-import Loading from "../Loading";
-import AutocompleteRoles from "../AutocompleteRoles";
 import { ProgressBar } from "react-bootstrap";
 
 const Upload = ({ user }) => {
@@ -32,13 +30,9 @@ const Upload = ({ user }) => {
     });
   };
 
-  function update_progress(progress, file, p){
-    console.log("update")
-    console.log(progress);
-    console.log("------");
-
+  function update_progress(file, p){
     setBufferProgress({
-      file: file, progress: p,
+      file: file, progress: Math.round(p),
     });
   }
 
@@ -51,7 +45,7 @@ const Upload = ({ user }) => {
     if (tfiles.length > 0) {
       for (var f of tfiles) {
         if (f["name"] == bufferProgress.file["name"]) {
-          f["progress"] = bufferProgress.progress;
+          f["progress"] = Math.min(100, f["progress"]+bufferProgress.progress);
         }
       }
     }
@@ -86,6 +80,7 @@ const Upload = ({ user }) => {
   }
 
   async function upload_chunk(chunk, uid, uuid, file, chunk_size) {
+    console.log("upload chunck", chunk, file)
     var payload_part = {
       filename: uuid + "/" + file["name"],
       upload_id: uid,
@@ -101,27 +96,32 @@ const Upload = ({ user }) => {
     });
     const res_signed_part = await res_part.json();
 
-    //const resp = await fetch(res_signed_part["url"], {
-    //  method: "PUT",
-    //  body: file.slice(
-    //    (chunk - 1) * chunk_size,
-    //    Math.min(file.size, chunk * chunk_size)
-    //  ),
-    //});
-
-    axios.request({
+    const resp = await fetch(res_signed_part["url"], {
       method: "PUT",
-      url: res_signed_part["url"],
-      data: file.slice(
-            (chunk - 1) * chunk_size,
-            Math.min(file.size, chunk * chunk_size)
-          ),
-      onUploadProgress: (p) => {
-        var int_progress = (p.loaded / p.total)/(file.size/chunk_size);
-        var chunk_progress = chunk/(file.size/chunk_size)
-        update_progress(progress, file, Math.round(int_progress+progress+chunk_progress) * 100);
-      },
+      body: file.slice(
+        (chunk - 1) * chunk_size,
+        Math.min(file.size, chunk * chunk_size)
+      ),
     });
+
+    //const resp = await axios.put(res_signed_part["url"], {
+    //  body: file.slice(
+    //       (chunk - 1) * chunk_size,
+    //        Math.min(file.size, chunk * chunk_size)
+    //     ),
+    //  onUploadProgress: (p) => {
+        
+    //    var int_progress = (p.loaded / p.total)/(file.size/chunk_size);
+    //    var chunk_progress = chunk/(file.size/chunk_size)
+    //    console.log(chunk, chunk_progress,p.loaded,p.total,file.size,chunk_size);
+
+    //    console.log("Progress", Math.round(int_progress+progress+chunk_progress) * 100);
+    //    update_progress(progress, file, Math.round(int_progress+chunk_progress) * 100);
+    //  }
+    //});
+    var nchunks = Math.round(file.size/chunk_size);
+    console.log("temp progress:",nchunks)
+    update_progress(file, (100/nchunks));
 
     var etag = await resp.headers.get("etag").replaceAll('"', "");
     return { ETag: etag, PartNumber: chunk };
@@ -129,7 +129,6 @@ const Upload = ({ user }) => {
 
   // Upload Reads to Amazon S3 Bucket
   function upload_file() {
-    console.log(files);
     // Get files
     //var files = $("#fileinput").prop("files");
     var oversized_files = [];
@@ -193,19 +192,20 @@ const Upload = ({ user }) => {
             }
             formdata.append("file", file);
 
-            axios.request({
+            const res = await axios.request({
               method: "POST",
               url: data["response"]["url"],
               data: formdata,
               onUploadProgress: (p) => {
-                update_progress(progress, file, Math.round(p.loaded / p.total) * 100);
+                //update_progress(progress, file, Math.round(p.loaded / p.total) * 100);
               },
             });
+            update_progress(file, 100);
+
           })(); // end async
         } // end small file upload
         else {
-          add_progress(file);
-          var chunk_size = 6 * 1024 * 1024;
+          var chunk_size = 5 * 1024 * 1024;
           var chunk_number = file.size / chunk_size;
           var chunks = range(chunk_number);
 
@@ -214,6 +214,8 @@ const Upload = ({ user }) => {
           });
 
           (async () => {
+            add_progress(file);
+
             const response = await fetch(base_url + "/startmultipart", {
               method: "POST",
               headers: {
@@ -254,6 +256,7 @@ const Upload = ({ user }) => {
             })
               .then((response) => response.json())
               .then((responseData) => {
+                update_progress(file, 100);
                 console.log(responseData);
                 console.log("successfully uploaded");
               }); // end complete
@@ -291,8 +294,22 @@ const Upload = ({ user }) => {
          
           {
             progress.files.map(file => {
-                console.log(file)
                 var lab = file.progress == 100 ? "complete" : `${file.progress}%`
+                
+                if(lab == "complete"){
+                  return (
+<>
+                  <label>{file.name}</label>
+                  <ProgressBar
+                    variant="success"
+                    className={styles.progress}
+                    now={file.progress}
+                    key={file.name}
+                    label={lab}
+                  />
+                  </>
+                )}
+                
                 return (
                   <>
                   <label>{file.name}</label>
