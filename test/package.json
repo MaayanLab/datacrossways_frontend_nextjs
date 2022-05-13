@@ -26,6 +26,7 @@
     "next-auth": "^4.3.2",
     "next-session": "^4.0.4",
     "react": "18.0.0",
+    "react-axios": "^2.0.5",
     "react-bootstrap": "^2.3.0",
     "react-bootstrap-typeahead": "^6.0.0-alpha.11",
     "react-data-table-component": "^7.5.0",

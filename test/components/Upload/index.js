@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef} from "react";
 import styles from "./upload.module.css";
 import "bootstrap/dist/css/bootstrap.css";
 
@@ -7,13 +7,15 @@ import axios from "axios";
 import { ProgressBar } from "react-bootstrap";
 
 const Upload = ({ user }) => {
+
+  const file_input = useRef();
   var filenames = [];
   var base_url = "http://localhost:5000/api";
 
   const [files, setFiles] = useState();
 
   const changeFileHandler = (event) => {
-    setFiles(event.target.files);
+    //setFiles(event.target.files);
   };
 
   const [progress, setProgress] = useState({ files: [] });
@@ -29,6 +31,10 @@ const Upload = ({ user }) => {
       files: [...progress.files, tfile],
     });
   };
+
+  function truncate(str, n){
+    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+  }
 
   function update_progress(file, p){
     setBufferProgress({
@@ -80,7 +86,6 @@ const Upload = ({ user }) => {
   }
 
   async function upload_chunk(chunk, uid, uuid, file, chunk_size) {
-    console.log("upload chunck", chunk, file)
     var payload_part = {
       filename: uuid + "/" + file["name"],
       upload_id: uid,
@@ -120,7 +125,7 @@ const Upload = ({ user }) => {
     //  }
     //});
     var nchunks = Math.round(file.size/chunk_size);
-    console.log("temp progress:",nchunks)
+    
     update_progress(file, (100/nchunks));
 
     var etag = await resp.headers.get("etag").replaceAll('"', "");
@@ -131,6 +136,12 @@ const Upload = ({ user }) => {
   function upload_file() {
     // Get files
     //var files = $("#fileinput").prop("files");
+    
+    setFiles(file_input.files);
+    console.log(file_input);
+    var files = file_input.files;
+    //file_input.current.value = "";
+
     var oversized_files = [];
     var files_with_space = [];
     var wrong_format_files = [];
@@ -257,7 +268,6 @@ const Upload = ({ user }) => {
               .then((response) => response.json())
               .then((responseData) => {
                 update_progress(file, 100);
-                console.log(responseData);
                 console.log("successfully uploaded");
               }); // end complete
           })(); // end async
@@ -275,6 +285,7 @@ const Upload = ({ user }) => {
           <input type="hidden" name="upload" />
           <input
             id="fileinput"
+            ref={file_input}
             type="file"
             multiple
             onChange={changeFileHandler}
@@ -299,7 +310,7 @@ const Upload = ({ user }) => {
                 if(lab == "complete"){
                   return (
 <>
-                  <label>{file.name}</label>
+                  <label>{truncate(file.name,11)}</label>
                   <ProgressBar
                     variant="success"
                     className={styles.progress}
@@ -312,7 +323,7 @@ const Upload = ({ user }) => {
                 
                 return (
                   <>
-                  <label>{file.name}</label>
+                  <label>{truncate(file.name,20)}</label>
                   <ProgressBar
                     className={styles.progress}
                     animated
