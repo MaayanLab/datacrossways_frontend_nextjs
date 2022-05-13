@@ -90,3 +90,17 @@
 .form_i5 {
     animation-delay: 0.4s;
 }
+
+
+.progress_wrapper{
+    width: 540px;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 120px 420px
+}
+
+.progress{
+    margin: 10px;
+    width: 300px;
+    margin: 3px;
+}

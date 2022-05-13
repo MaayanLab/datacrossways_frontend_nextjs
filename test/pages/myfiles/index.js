@@ -1,7 +1,6 @@
-import Link from "next/link";
 import Head from "next/head";
 
-import React, { useState, useMemo, useEffect} from "react";
+import React, { useState, useEffect} from "react";
 
 import styles from "./myfiles.module.css";
 import Loading from "../../components/Loading";
@@ -42,7 +41,7 @@ export default function MyFiles() {
         <h1>My Files</h1>
 
         <div className={styles.upload}>
-          
+          <Upload/>
         </div>
 
         <div className={styles.listfiles}>

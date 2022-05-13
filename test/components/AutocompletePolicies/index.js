@@ -31,7 +31,12 @@ const AutocompletePolicies = ({ currentPolicies, options, callback }) => {
       <Highlighter search={text}>{option.name}</Highlighter>
       <div>
         <small className={styles.small}>
-          ID: {option.id} | {option.name}
+          ID: {option.id} | {option.effect} | {option.action}
+        </small>
+
+        Collections:
+        <small className={styles.small}>
+          ID: {option.id} | {option.effect} | {option.action}
         </small>
       </div>
     </Fragment>
