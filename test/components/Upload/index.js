@@ -2,11 +2,21 @@ import React, { useState, useEffect, useCallback, useRef} from "react";
 import styles from "./upload.module.css";
 import "bootstrap/dist/css/bootstrap.css";
 
+import DropFile from "../DropFile";
+
 import axios from "axios";
 
 import { ProgressBar } from "react-bootstrap";
 
+import Alert from "../../components/Alert";
+
 const Upload = ({ user }) => {
+
+  const [fileList, setFileList] = useState([]);
+
+  const onFileChange = (files) => {
+    console.log("in upload",files);
+  }
 
   const file_input = useRef();
   var filenames = [];
@@ -14,8 +24,10 @@ const Upload = ({ user }) => {
 
   const [files, setFiles] = useState();
 
+  const [popupMessage, setPopupMessages] = useState({"message": "", "show": false})
+
   const changeFileHandler = (event) => {
-    //setFiles(event.target.files);
+    setFiles(event.target.files);
   };
 
   const [progress, setProgress] = useState({ files: [] });
@@ -33,7 +45,7 @@ const Upload = ({ user }) => {
   };
 
   function truncate(str, n){
-    return (str.length > n) ? str.substr(0, n-1) + '...' : str;
+    return (str.length > n) ? str.substr(0, Math.round(n/2)) + '...' + str.substr(str.length-Math.round((n-1)/2), str.length) : str;
   }
 
   function update_progress(file, p){
@@ -109,21 +121,6 @@ const Upload = ({ user }) => {
       ),
     });
 
-    //const resp = await axios.put(res_signed_part["url"], {
-    //  body: file.slice(
-    //       (chunk - 1) * chunk_size,
-    //        Math.min(file.size, chunk * chunk_size)
-    //     ),
-    //  onUploadProgress: (p) => {
-        
-    //    var int_progress = (p.loaded / p.total)/(file.size/chunk_size);
-    //    var chunk_progress = chunk/(file.size/chunk_size)
-    //    console.log(chunk, chunk_progress,p.loaded,p.total,file.size,chunk_size);
-
-    //    console.log("Progress", Math.round(int_progress+progress+chunk_progress) * 100);
-    //    update_progress(progress, file, Math.round(int_progress+chunk_progress) * 100);
-    //  }
-    //});
     var nchunks = Math.round(file.size/chunk_size);
     
     update_progress(file, (100/nchunks));
@@ -134,14 +131,8 @@ const Upload = ({ user }) => {
 
   // Upload Reads to Amazon S3 Bucket
   function upload_file() {
-    // Get files
-    //var files = $("#fileinput").prop("files");
-    
     setFiles(file_input.files);
-    console.log(file_input);
-    var files = file_input.files;
-    //file_input.current.value = "";
-
+    
     var oversized_files = [];
     var files_with_space = [];
     var wrong_format_files = [];
@@ -211,6 +202,22 @@ const Upload = ({ user }) => {
                 //update_progress(progress, file, Math.round(p.loaded / p.total) * 100);
               },
             });
+
+            console.log("uploaded small file", file)
+            setPopupMessages({
+              message: "File uploaded",
+              type: "warning",
+              show: true,
+              id: Math.random(),
+            });
+            setTimeout(() => {
+              setPopupMessages({
+                message: "",
+                type: "success",
+                show: false,
+                id: Math.random(),
+              });
+            }, 3000);
             update_progress(file, 100);
 
           })(); // end async
@@ -269,6 +276,21 @@ const Upload = ({ user }) => {
               .then((responseData) => {
                 update_progress(file, 100);
                 console.log("successfully uploaded");
+
+                setPopupMessages({
+                  message: "File uploaded",
+                  type: "warning",
+                  show: true,
+                  id: Math.random(),
+                });
+                setTimeout(() => {
+                  setPopupMessages({
+                    message: "",
+                    type: "success",
+                    show: false,
+                    id: Math.random(),
+                  });
+                }, 3000);
               }); // end complete
           })(); // end async
         }
@@ -278,7 +300,11 @@ const Upload = ({ user }) => {
 
   return (
     <>
+      {popupMessage["show"] ? <Alert message={popupMessage} /> : ""}
       <h2>Upload files</h2>
+
+      <DropFile onFileChange={(files) => onFileChange(files)}/>
+
       <div id="upload-wrapper">
         <button onClick={print_progress}>show progress</button>
         <form id="read-upload-form">
@@ -309,7 +335,7 @@ const Upload = ({ user }) => {
                 
                 if(lab == "complete"){
                   return (
-<>
+                  <>
                   <label>{truncate(file.name,11)}</label>
                   <ProgressBar
                     variant="success"

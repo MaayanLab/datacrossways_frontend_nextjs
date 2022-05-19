@@ -46,6 +46,8 @@ function FileTable() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [deleteFile, setDeleteFile] = useState() 
+
   const editFile = (file) => {
     console.log("Edit this please:");
 
@@ -64,6 +66,42 @@ function FileTable() {
 
     setCurrentFile(file);
   };
+
+  
+  useEffect(() => {
+    const delFile = async () => {
+      const options = {
+        method: "DELETE"
+      }
+      console.log("delete file", deleteFile);
+      const res = await fetch("http://localhost:5000/api/file/"+deleteFile["id"], options)
+      const result = await res.json();
+      setDataReload(deleteFile)
+
+      setPopupMessages({
+        message: "File deleted",
+        type: "warning",
+        show: true,
+        id: Math.random(),
+      });
+      setTimeout(() => {
+        setPopupMessages({
+          message: "",
+          type: "success",
+          show: false,
+          id: Math.random(),
+        });
+      }, 3000);
+
+    };
+    if(deleteFile){
+      delFile();
+    }
+  }, [deleteFile])
+  
+  const deleteFileAction = (file) => {
+    setDeleteFile(file)
+  }
 
   const updateFile = () => {
 
@@ -111,7 +149,7 @@ function FileTable() {
     <>
       {popupMessage["show"] ? <Alert message={popupMessage} /> : ""}
 
-      <Datatable files={currentPosts} handleShow={handleShow} editFile={editFile}/>
+      <Datatable files={currentPosts} handleShow={handleShow} editFile={editFile} deleteFile={deleteFileAction}/>
 
       <Modal show={show} onHide={handleClose} dialogClassName="modal-width" className={styles.modal}>
         <Modal.Header closeButton>

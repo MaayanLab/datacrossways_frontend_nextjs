@@ -41,7 +41,7 @@ const customStyles = {
   },
 };
 
-function Datatable({ files, handleShow, editFile }) {
+function Datatable({ files, handleShow, editFile, deleteFile }) {
 
     const columns = [
         {
@@ -107,9 +107,17 @@ function Datatable({ files, handleShow, editFile }) {
         {
           name: "Edit",
           sortable: false,
-          maxWidth: "110px",
+          maxWidth: "140px",
           selector: (row) => (
             <div>
+              <button
+                onClick={() => {
+                  deleteFile(row);
+                }}
+              >
+                X
+              </button>
+                  | 
               <button
                 onClick={() => {
                   editFile(row);

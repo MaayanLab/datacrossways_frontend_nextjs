@@ -6,10 +6,12 @@ import styles from "./myfiles.module.css";
 import Loading from "../../components/Loading";
 import FileTableUser from "../../components/FileTableUser";
 import Upload from "../../components/Upload";
+import UserKeys from "../../components/UserKeys";
 
 export default function MyFiles() {
 
   const [mycreds, setMyCreds] = useState()
+  
 
   useEffect(() => {
     const fetchMyCreds = async () => {
@@ -38,6 +40,13 @@ export default function MyFiles() {
         
         {mycreds["first_name"]} {mycreds["last_name"]} | {mycreds["email"]} | {mycreds["uuid"]}
         <br/>
+        
+        <h1>My Keys</h1>
+        <br/>
+        <div className={styles.listfiles}>
+          <UserKeys user={mycreds}/>
+        </div>
+        
         <h1>My Files</h1>
 
         <div className={styles.upload}>
@@ -47,6 +56,7 @@ export default function MyFiles() {
         <div className={styles.listfiles}>
            <FileTableUser user={mycreds}/>
         </div>
+        <br/>
       </main>
     </div>
   );

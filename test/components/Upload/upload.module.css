@@ -96,7 +96,7 @@
     width: 600px;
     padding: 24px;
     display: grid;
-    grid-template-columns: 120px 420px
+    grid-template-columns: 200px 400px
 }
 
 .progress{
