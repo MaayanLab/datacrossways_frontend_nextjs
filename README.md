@@ -1,5 +1,6 @@
-# nextjatest
-Testing nextjs
+# Datacrossways frontend
+
+This is the Datacrossways REACT frontend.
 
 run:
 
