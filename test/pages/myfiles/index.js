@@ -1,23 +1,31 @@
 import Head from "next/head";
 
 import React, { useState, useEffect} from "react";
+import { Redirect, Route } from 'react-router-dom'
 
 import styles from "./myfiles.module.css";
 import Loading from "../../components/Loading";
 import FileTableUser from "../../components/FileTableUser";
 import Upload from "../../components/Upload";
 import UserKeys from "../../components/UserKeys";
+import Footer from "../../components/Footer";
+import Navigation from "../../components/Navigation";
 
 export default function MyFiles() {
 
   const [mycreds, setMyCreds] = useState()
   
-
   useEffect(() => {
     const fetchMyCreds = async () => {
       const res = await fetch("http://localhost:5000/api/i");
       const mycred = await res.json();
-      setMyCreds(mycred);
+      console.log(mycred);
+      if(mycred.id){
+        setMyCreds(mycred);
+      }
+      else{
+        window.location.href = "http://localhost:5000/login";
+      }
     };
     fetchMyCreds();
   }, [])
@@ -27,7 +35,7 @@ export default function MyFiles() {
       <Loading/>
     )
   }
-
+  
   return (
     <div className={styles.container}>
       <Head>
@@ -36,6 +44,7 @@ export default function MyFiles() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <Navigation/>
         Current user: <br/>
         
         {mycreds["first_name"]} {mycreds["last_name"]} | {mycreds["email"]} | {mycreds["uuid"]}

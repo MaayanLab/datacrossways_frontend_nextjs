@@ -4,7 +4,11 @@ import { FileList } from "./../FileList";
 import { Modal } from "react-bootstrap";
 import FileEdit from "./../FileEdit";
 import Button from "../Button";
-import Alert from '../Alert'
+import Alert from '../Alert';
+
+import axios from 'axios'
+import fileDownload from 'js-file-download';
+import FileSaver from 'file-saver';
 
 import Datatable from "../Datatable";
 
@@ -74,6 +78,24 @@ function FileTableUser(user) {
     setDeleteFile(file)
   }
 
+  const downloadFile = (file) => {
+    const fetchURL = async () => {
+      const res = await fetch("http://localhost:5000/api/file/download/"+file.id);
+      const urlres = await res.json();
+      
+      // axios.get(urlres.response,{
+      //   responseType: 'blob',
+      //   })
+      //   .then((resp) => {
+      //     fileDownload(resp.data, file.display_name);
+      //   });
+
+      FileSaver.saveAs(urlres.response, file.display_name);
+    
+    };
+    fetchURL();
+  }
+
   const editFile = (file) => {
     tempFile.display_name = file.display_name;
     tempFile.name = file.name;
@@ -136,7 +158,7 @@ function FileTableUser(user) {
     <>
       {popupMessage["show"] ? <Alert message={popupMessage} /> : ""}
 
-      <Datatable files={files} handleShow={handleShow} editFile={editFile} deleteFile={deleteFileAction}/>
+      <Datatable files={files} handleShow={handleShow} editFile={editFile} deleteFile={deleteFileAction} downloadFile={downloadFile}/>
 
       <Modal show={show} onHide={handleClose} dialogClassName="modal-width" className={styles.modal}>
         <Modal.Header closeButton>

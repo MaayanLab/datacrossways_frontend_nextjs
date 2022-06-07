@@ -27,3 +27,13 @@
     font-size: 16px;
     color: #24aa48;
 }
+
+.link{
+    color: blue;
+    cursor: pointer;
+}
+
+.link:hover{
+    color: black;
+    font-weight: bold;
+}

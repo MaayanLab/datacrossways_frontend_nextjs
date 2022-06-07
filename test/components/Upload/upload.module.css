@@ -93,14 +93,68 @@
 
 
 .progress_wrapper{
-    width: 600px;
-    padding: 24px;
-    display: grid;
-    grid-template-columns: 200px 400px
+    width: 100%;
+    margin: 20px;
 }
 
 .progress{
-    margin: 10px;
-    width: 300px;
-    margin: 3px;
+    
+    width: 100%;
+    top: 50%;
+    opacity: 1;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.dropfilepreview__item p {
+    margin-bottom: 0px;
+}
+
+.dropfilepreview__title {
+    margin-bottom: 20px;
+}
+
+.dropfilepreview__item {
+    position: relative;
+    display: flex;
+    margin-bottom: 6px;
+    background-color: var(--input-bg);
+    padding: 6px;
+    border-radius: 12px;
+}
+
+.dropfilepreview__item img {
+    width: 50px;
+    margin-right: 20px;
+    height: 50px;
+}
+
+.dropfilepreview__item__info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    white-space: nowrap;
+}
+
+.dropfilepreview__item__del {
+    background-color: var(--box-bg);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    box-shadow: var(--box-shadow);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.dropfilepreview__item:hover .dropfilepreview__item__del {
+    opacity: 1;
 }

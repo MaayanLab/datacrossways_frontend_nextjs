@@ -13,6 +13,8 @@ import Loading from '../../components/Loading';
 import Alert from '../../components/Alert'
 import FileTable from '../../components/FileTable';
 
+import Navigation from "../../components/Navigation";
+
 export default function AdminView() {
     let init_state = {"message": "Admin mode", "type": "success"}
     const [popupMessage, setPopupMessages] = React.useState(init_state)
@@ -25,6 +27,9 @@ export default function AdminView() {
                     <meta name="description" content="Do what you want!" />
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
+
+                <Navigation/>
+
                 <h1>You are admin and logged in successfully, here are some things you can do</h1>
 
                 <ul>

@@ -7,7 +7,7 @@ import styles from './dropfile.module.css';
 import { ImageConfig } from '../../config/ImageConfig'; 
 import uploadImg from '../../public/dropfile/cloud-upload-regular-240.png';
 
-const DropFile = ({ onFileChange }) => {
+const DropFile = ({ newUpload }) => {
 
     const wrapperRef = useRef(null);
 
@@ -23,11 +23,15 @@ const DropFile = ({ onFileChange }) => {
         const newFiles = e.target.files;
         if (newFiles) {
             var updatedList = [...fileList];
+            var newList = []
             for(let newFile of newFiles){
-                updatedList = [...updatedList, newFile];
+                newFile.progress = 0;
+                newFile.waiting = true;
+                //updatedList = [...updatedList, newFile];
+                newList = [...newList, newFile]
             }
             setFileList(updatedList);
-            onFileChange(updatedList);
+            newUpload(newList);
         }
     }
 
@@ -37,7 +41,6 @@ const DropFile = ({ onFileChange }) => {
         setFileList(updatedList);
         onFileChange(updatedList);
     }
-
     
     function niceBytes(bytes, decimals=2, binaryUnits=false) {
         if(bytes == 0) {

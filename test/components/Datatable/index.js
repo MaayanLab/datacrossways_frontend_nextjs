@@ -41,7 +41,7 @@ const customStyles = {
   },
 };
 
-function Datatable({ files, handleShow, editFile, deleteFile }) {
+function Datatable({ files, handleShow, editFile, deleteFile, downloadFile }) {
 
     const columns = [
         {
@@ -53,7 +53,16 @@ function Datatable({ files, handleShow, editFile, deleteFile }) {
         {
           name: "Display Name",
           sortable: true,
-          selector: (row) => row.display_name,
+          selector: (row) => {
+            return(
+              <span className={styles.link}
+                  onClick={() => {
+                      downloadFile(row);
+                  }}>
+                  {row.display_name}
+              </span>
+            )
+          }
         },
         {
           name: "UUID",

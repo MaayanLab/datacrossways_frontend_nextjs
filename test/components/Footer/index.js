@@ -10,7 +10,7 @@ const Footer = ({ children, ...rest }) => {
                 target="_blank"
                 rel="noopener noreferrer"
             >
-                Developed by {' '}
+                Developed by {'Ma\'ayan Laboratory'}
                 <span>
                     <Image src="/maayan_logo.png" alt="Maayan Laboratory" width={100} height={40} />
                 </span>

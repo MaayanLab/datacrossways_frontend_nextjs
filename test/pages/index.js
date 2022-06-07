@@ -3,7 +3,6 @@ import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 
 import React from 'react'
-
 import Link from 'next/link'
 
 import Button from '../components/Button'
