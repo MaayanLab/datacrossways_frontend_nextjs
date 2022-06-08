@@ -19,7 +19,6 @@ export default function MyFiles() {
     const fetchMyCreds = async () => {
       const res = await fetch("http://localhost:5000/api/i");
       const mycred = await res.json();
-      console.log(mycred);
       if(mycred.id){
         setMyCreds(mycred);
       }
@@ -29,6 +28,17 @@ export default function MyFiles() {
     };
     fetchMyCreds();
   }, [])
+
+  const oncomplete = () => {
+    let cred = {};
+    cred.email = mycreds.email;
+    cred.first_name = mycreds.first_name;
+    cred.last_name = mycreds.last_name;
+    cred.id = mycreds.id;
+    cred.uuid = mycreds.uuid;
+    cred.new = 1;
+    setMyCreds(cred);
+  }
   
   if(mycreds == undefined){
     return (
@@ -59,7 +69,7 @@ export default function MyFiles() {
         <h1>My Files</h1>
 
         <div className={styles.upload}>
-          <Upload/>
+          <Upload oncomplete={oncomplete}/>
         </div>
 
         <div className={styles.listfiles}>

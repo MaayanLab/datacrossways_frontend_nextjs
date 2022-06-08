@@ -43,7 +43,7 @@ function FileTableUser(user) {
     };
     fetchFiles();
   }, [dataReload]);
-
+  
   useEffect(() => {
     const delFile = async () => {
       const options = {

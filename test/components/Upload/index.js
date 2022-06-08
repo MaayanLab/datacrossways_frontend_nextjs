@@ -13,7 +13,7 @@ import { ProgressBar } from "react-bootstrap";
 
 import Alert from "../../components/Alert";
 
-const Upload = ({ user }) => {
+const Upload = ({ oncomplete }) => {
   
   const [files, setFiles] = useState([]);
 
@@ -41,7 +41,7 @@ const Upload = ({ user }) => {
   };
   
   const [down, setDown] = useState(0);
-
+  
   useEffect(() => {
     console.log("look for files");
     let uploadcount = 0;
@@ -204,6 +204,8 @@ const Upload = ({ user }) => {
           
           file.uploading = false;
           file.completed = true;
+          
+          oncomplete();
 
           setPopupMessages({
             message: "File uploaded",
@@ -275,7 +277,7 @@ const Upload = ({ user }) => {
             .then((responseData) => {
               update_progress(file, 100);
               console.log("successfully uploaded");
-
+              oncomplete();
               setPopupMessages({
                 message: "File uploaded",
                 type: "warning",
