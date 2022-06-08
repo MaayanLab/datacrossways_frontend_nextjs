@@ -14,9 +14,10 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import TablePagination from '@mui/material/TablePagination';
 
 import styles from "./featuretable.module.css";
-
+import { TableFooter } from '@mui/material';
 
 function createData(name, calories, fat, carbs, protein, price) {
     return {
@@ -47,8 +48,8 @@ function createData(name, calories, fat, carbs, protein, price) {
   
     return (
       <React.Fragment>
-        <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
-          <TableCell>
+        <TableRow style={{height: 24, paddingTop: 0, paddingBottom: 0, border: '0px solid rgba(0, 0, 0, 0.00)'}} sx={{ '& > *': { borderBottom: 'unset' } }}>
+          <TableCell  style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             <IconButton
               aria-label="expand row"
               size="small"
@@ -57,13 +58,13 @@ function createData(name, calories, fat, carbs, protein, price) {
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
             </IconButton>
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} component="th" scope="row">
             {row.name}
           </TableCell>
-          <TableCell align="right">{row.calories}</TableCell>
-          <TableCell align="right">{row.fat}</TableCell>
-          <TableCell align="right">{row.carbs}</TableCell>
-          <TableCell align="right">{row.protein}</TableCell>
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.calories}</TableCell>
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.fat}</TableCell>
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.carbs}</TableCell>
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.protein}</TableCell>
         </TableRow>
         <TableRow>
           <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -128,10 +129,38 @@ function createData(name, calories, fat, carbs, protein, price) {
     createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
     createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
     createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
+    createData('Frozen yoghurt2', 159, 6.0, 24, 4.0, 3.99),
+    createData('Ice cream sandwich2', 237, 9.0, 37, 4.3, 4.99),
+    createData('Eclair2', 262, 16.0, 24, 6.0, 3.79),
+    createData('Cupcake2', 305, 3.7, 67, 4.3, 2.5),
+    createData('Gingerbread2', 356, 16.0, 49, 3.9, 1.5),
+    createData('Frozen yoghurt3', 159, 6.0, 24, 4.0, 3.99),
+    createData('Ice cream sandwich3', 237, 9.0, 37, 4.3, 4.99),
+    createData('Ecl3air', 262, 16.0, 24, 6.0, 3.79),
+    createData('Cupcak3e', 305, 3.7, 67, 4.3, 2.5),
+    createData('Ginger3bread', 356, 16.0, 49, 3.9, 1.5),
+    createData('Frozen yog3hurt2', 159, 6.0, 24, 4.0, 3.99),
+    createData('Ice cream sa3ndwich2', 237, 9.0, 37, 4.3, 4.99),
+    createData('Ec3lair2', 262, 16.0, 24, 6.0, 3.79),
+    createData('Cupca3ke2', 305, 3.7, 67, 4.3, 2.5),
+    createData('Ginger3bread2', 356, 16.0, 49, 3.9, 1.5)
   ];
   
 
 function FeatureTable() {
+
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const res = await fetch("http://localhost:5000/api/file");
@@ -154,12 +183,23 @@ function FeatureTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <Row key={row.name} row={row} />
-          ))}
+          {rows
+            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            .map((row) => (
+              <Row style={{height: 33}} key={row.name} row={row} />
+            ))}
         </TableBody>
       </Table>
-    </TableContainer>
+      <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 100]}
+          component="div"
+          count={rows.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
   );
 }
 
