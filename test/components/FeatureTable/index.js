@@ -17,12 +17,33 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TablePagination from '@mui/material/TablePagination';
 import Checkbox from '@mui/material/Checkbox';
 
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@mui/icons-material/Delete';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import Toolbar from '@mui/material/Toolbar';
+import { alpha } from '@mui/material/styles';
+import { visuallyHidden } from '@mui/utils';
+
 import styles from "./featuretable.module.css";
 import { TableFooter } from '@mui/material';
+import { boxSizing } from '@mui/system';
 
-function createData(name, calories, fat, carbs, protein, price) {
+const rows = [
+  createData('Frozen yoghurt',"wqelknwq89", 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich',"wqelkrgtwq89", 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair',"wqelkfgh", 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake',"wqel543dr", 305, 3.7, 67, 4.3, 2.5),
+  createData('Gingerbread',"werq89", 356, 16.0, 49, 3.9, 1.5),
+  createData('Frozen yoghurt2',"wqdfgwq89", 159, 6.0, 24, 4.0, 3.99),
+  createData('Ice cream sandwich2',"wqdfgknwq89", 237, 9.0, 37, 4.3, 4.99),
+  createData('Eclair2',"wqehfghq89", 262, 16.0, 24, 6.0, 3.79),
+  createData('Cupcake2',"wqelknfgh89", 305, 3.7, 67, 4.3, 2.5)
+];
+
+function createData(name, uuid, calories, fat, carbs, protein, price) {
     return {
       name,
+      uuid,
       calories,
       fat,
       carbs,
@@ -43,17 +64,31 @@ function createData(name, calories, fat, carbs, protein, price) {
     };
   }
   
-  function Row(props) {
-    const { row } = props;
+  function Row({row, onCheckClick, selected}) {
     const [open, setOpen] = useState(false);
-  
+    const isSelected = (name) => selected.indexOf(name) !== -1;
+    const isItemSelected = isSelected(row.uuid);
+
     return (
       <React.Fragment>
-        <TableRow style={{height: 24, paddingTop: 0, paddingBottom: 0, border: '0px solid rgba(0, 0, 0, 0.00)'}} sx={{ '& > *': { borderBottom: 'unset' } }}>
+        <TableRow className={styles.tr} style={{height: 36, paddingTop: 0, paddingBottom: 0, borderTop: '1px solid #e6e8eb'}} sx={{ '& > *': { borderBottom: 'unset' } }}>
           <TableCell  style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
+            
+          <Checkbox
+              color="primary"
+              checked={isItemSelected}
+              inputProps={{
+                'aria-labelledby': row.uuid,
+              }}
+              style={{boxSizing: "border-box", height: 26}}
+              onClick={(event) => onCheckClick(event, row.uuid)}  
+            />
+          </TableCell>
+          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} component="th" scope="row">
             <IconButton
               aria-label="expand row"
               size="small"
+              style={{boxSizing: "border-box", height: 26}}
               onClick={() => setOpen(!open)}
             >
               {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -65,50 +100,18 @@ function createData(name, calories, fat, carbs, protein, price) {
           <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.calories}</TableCell>
           <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.fat}</TableCell>
           <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.carbs}</TableCell>
-          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.protein}</TableCell>
+          <TableCell className={styles.tchover} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.protein}</TableCell>
         </TableRow>
         <TableRow>
-          <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <TableCell style={{ paddingBottom: 0, paddingTop: 0, border: '0px solid black' }} colSpan={6}>
             <Collapse in={open} timeout="auto" unmountOnExit>
-              <Box sx={{ margin: 1 }}>
+              <Box sx={{ margin: 0 , border: '0px solid black'}}>
                 <Typography variant="h6" gutterBottom component="div">
-                  History
+                  Info
                 </Typography>
-                <Table size="small" aria-label="purchases">
-                  <TableHead>
-                    <TableRow style={{height: 33}}>
-                    <TableCell padding="checkbox">
-                        <Checkbox
-                          color="primary"
-                          indeterminate={numSelected > 0 && numSelected < rowCount}
-                          checked={rowCount > 0 && numSelected === rowCount}
-                          onChange={onSelectAllClick}
-                          inputProps={{
-                            'aria-label': 'select all desserts',
-                          }}
-                        />
-                      </TableCell>
-                      <TableCell>Date</TableCell>
-                      <TableCell>Customer</TableCell>
-                      <TableCell align="right">Amount</TableCell>
-                      <TableCell align="right">Total price ($)</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {row.history.map((historyRow) => (
-                      <TableRow key={historyRow.date} style={{height: 13}}>
-                        <TableCell component="th" scope="row">
-                          {historyRow.date}
-                        </TableCell>
-                        <TableCell>{historyRow.customerId}</TableCell>
-                        <TableCell align="right">{historyRow.amount}</TableCell>
-                        <TableCell align="right">
-                          {Math.round(historyRow.amount * row.price * 100) / 100}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                <div>
+                  This is just a small div.
+                </div>
               </Box>
             </Collapse>
           </TableCell>
@@ -135,32 +138,17 @@ function createData(name, calories, fat, carbs, protein, price) {
     }).isRequired,
   };
   
-  const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3, 4.99),
-    createData('Eclair', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupcake', 305, 3.7, 67, 4.3, 2.5),
-    createData('Gingerbread', 356, 16.0, 49, 3.9, 1.5),
-    createData('Frozen yoghurt2', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sandwich2', 237, 9.0, 37, 4.3, 4.99),
-    createData('Eclair2', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupcake2', 305, 3.7, 67, 4.3, 2.5),
-    createData('Gingerbread2', 356, 16.0, 49, 3.9, 1.5),
-    createData('Frozen yoghurt3', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sandwich3', 237, 9.0, 37, 4.3, 4.99),
-    createData('Ecl3air', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupcak3e', 305, 3.7, 67, 4.3, 2.5),
-    createData('Ginger3bread', 356, 16.0, 49, 3.9, 1.5),
-    createData('Frozen yog3hurt2', 159, 6.0, 24, 4.0, 3.99),
-    createData('Ice cream sa3ndwich2', 237, 9.0, 37, 4.3, 4.99),
-    createData('Ec3lair2', 262, 16.0, 24, 6.0, 3.79),
-    createData('Cupca3ke2', 305, 3.7, 67, 4.3, 2.5),
-    createData('Ginger3bread2', 356, 16.0, 49, 3.9, 1.5)
-  ];
-  
+
+function FeatureTable() {
+
+  const [selected, setSelected] = useState([]);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = rows.map((n) => n.name);
+      const newSelecteds = rows.map((n) => n.uuid);
       setSelected(newSelecteds);
       return;
     }
@@ -183,21 +171,8 @@ function createData(name, calories, fat, carbs, protein, price) {
         selected.slice(selectedIndex + 1),
       );
     }
-
     setSelected(newSelected);
-  };
-
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
-function FeatureTable() {
-
-  
-  const [selected, setSelected] = useState([]);
-
-
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  };  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -212,39 +187,47 @@ function FeatureTable() {
     const fetchData = async () => {
       const res = await fetch("http://localhost:5000/api/file");
       const files = await res.json();
+      console.log(files);
     };
     fetchData();
   }, []);
 
   return (
+    <>
+    <TableToolbar selected={selected}/>
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
-          <TableRow>
-            <TableCell />
+          <TableRow style={{height: 20, paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             <TableCell padding="checkbox">
               <Checkbox
                 color="primary"
-                indeterminate={numSelected > 0 && numSelected < rowCount}
-                checked={rowCount > 0 && numSelected === rowCount}
-                onChange={onSelectAllClick}
+                indeterminate={selected.length > 0 && selected.length < rows.length}
+                checked={rows.length > 0 && selected.length === rows.length}
+                onChange={handleSelectAllClick}
                 inputProps={{
                   'aria-label': 'select all desserts',
                 }}
               />
             </TableCell>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell/>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">Modified</TableCell>
+            <TableCell align="right">Size</TableCell>
+            <TableCell align="right">Access</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {rows
             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             .map((row) => (
-              <Row style={{height: 33}} key={row.name} row={row} />
+              <Row 
+                style={{height: 26}} 
+                key={row.name} 
+                row={row}
+                selected={selected}
+                onCheckClick={handleClick}  
+              />
             ))}
         </TableBody>
       </Table>
@@ -258,7 +241,58 @@ function FeatureTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      </>
   );
 }
+
+const TableToolbar = ({selected}) => {
+  const { numSelected } = selected.length;
+
+  return (
+    <Toolbar
+      sx={{
+        pl: { sm: 2 },
+        pr: { xs: 1, sm: 1 },
+        ...(selected.length > 0 && {
+          bgcolor: (theme) =>
+            alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+        }),
+      }}
+    >
+      {selected.length > 0 ? (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          color="inherit"
+          variant="subtitle1"
+          component="div"
+        >
+          {selected.length} selected
+        </Typography>
+      ) : (
+        <Typography
+          sx={{ flex: '1 1 100%' }}
+          variant="h6"
+          id="tableTitle"
+          component="div"
+        >
+          Files
+        </Typography>
+      )}
+      {selected.length > 0 ? (
+        <Tooltip title="Delete">
+          <IconButton>
+            <DeleteIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <Tooltip title="Filter list">
+          <IconButton>
+            <FilterListIcon />
+          </IconButton>
+        </Tooltip>
+      )}
+    </Toolbar>
+  );
+};
 
 export default FeatureTable;
