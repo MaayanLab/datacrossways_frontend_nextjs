@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useEffect} from 'react'
+import {useEffect, useState} from 'react'
 import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
@@ -15,6 +15,7 @@ import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TablePagination from '@mui/material/TablePagination';
+import Checkbox from '@mui/material/Checkbox';
 
 import styles from "./featuretable.module.css";
 import { TableFooter } from '@mui/material';
@@ -44,7 +45,7 @@ function createData(name, calories, fat, carbs, protein, price) {
   
   function Row(props) {
     const { row } = props;
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
   
     return (
       <React.Fragment>
@@ -76,6 +77,17 @@ function createData(name, calories, fat, carbs, protein, price) {
                 <Table size="small" aria-label="purchases">
                   <TableHead>
                     <TableRow style={{height: 33}}>
+                    <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          indeterminate={numSelected > 0 && numSelected < rowCount}
+                          checked={rowCount > 0 && numSelected === rowCount}
+                          onChange={onSelectAllClick}
+                          inputProps={{
+                            'aria-label': 'select all desserts',
+                          }}
+                        />
+                      </TableCell>
                       <TableCell>Date</TableCell>
                       <TableCell>Customer</TableCell>
                       <TableCell align="right">Amount</TableCell>
@@ -146,11 +158,46 @@ function createData(name, calories, fat, carbs, protein, price) {
     createData('Ginger3bread2', 356, 16.0, 49, 3.9, 1.5)
   ];
   
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = rows.map((n) => n.name);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1),
+      );
+    }
+
+    setSelected(newSelected);
+  };
+
+
+  const isSelected = (name) => selected.indexOf(name) !== -1;
 
 function FeatureTable() {
 
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  
+  const [selected, setSelected] = useState([]);
+
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -175,6 +222,17 @@ function FeatureTable() {
         <TableHead>
           <TableRow>
             <TableCell />
+            <TableCell padding="checkbox">
+              <Checkbox
+                color="primary"
+                indeterminate={numSelected > 0 && numSelected < rowCount}
+                checked={rowCount > 0 && numSelected === rowCount}
+                onChange={onSelectAllClick}
+                inputProps={{
+                  'aria-label': 'select all desserts',
+                }}
+              />
+            </TableCell>
             <TableCell>Dessert (100g serving)</TableCell>
             <TableCell align="right">Calories</TableCell>
             <TableCell align="right">Fat&nbsp;(g)</TableCell>
