@@ -24,11 +24,15 @@ import Toolbar from '@mui/material/Toolbar';
 import { alpha } from '@mui/material/styles';
 import { visuallyHidden } from '@mui/utils';
 
+import DownloadIcon from '@mui/icons-material/Download';
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+
 import styles from "./featuretable.module.css";
 import { TableFooter } from '@mui/material';
 import { boxSizing } from '@mui/system';
 
-const rows = [
+const rows3 = [
   createData('Frozen yoghurt',"wqelknwq89", 159, 6.0, 24, 4.0, 3.99),
   createData('Ice cream sandwich',"wqelkrgtwq89", 237, 9.0, 37, 4.3, 4.99),
   createData('Eclair',"wqelkfgh", 262, 16.0, 24, 6.0, 3.79),
@@ -39,6 +43,25 @@ const rows = [
   createData('Eclair2',"wqehfghq89", 262, 16.0, 24, 6.0, 3.79),
   createData('Cupcake2',"wqelknfgh89", 305, 3.7, 67, 4.3, 2.5)
 ];
+
+function niceBytes(bytes, decimals=2, binaryUnits=false) {
+  if(bytes == 0) {
+      return '0 Bytes';
+  }
+  var unitMultiple = (binaryUnits) ? 1024 : 1000; 
+  var unitNames = (unitMultiple === 1024) ? // 1000 bytes in 1 Kilobyte (KB) or 1024 bytes for the binary version (KiB)
+      ['Bytes', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB']: 
+      ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  var unitChanges = Math.floor(Math.log(bytes) / Math.log(unitMultiple));
+  return parseFloat((bytes / Math.pow(unitMultiple, unitChanges)).toFixed(decimals || 0)) + ' ' + unitNames[unitChanges];
+}
+
+function niceDate(date_string){
+  let d = new Date(date_string);
+  var options = { hour: 'numeric', minute: 'numeric', year: 'numeric', month: 'numeric', day: 'numeric' };
+  const regex = /:[0-9]*\s/ig;
+  return d.toLocaleString(options).toLowerCase().replaceAll(regex, " ");
+}
 
 function createData(name, uuid, calories, fat, carbs, protein, price) {
     return {
@@ -75,12 +98,15 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
           <TableCell  style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             
           <Checkbox
+              iconStyle={{fill: 'white'}}
               color="primary"
               checked={isItemSelected}
               inputProps={{
                 'aria-labelledby': row.uuid,
               }}
               style={{boxSizing: "border-box", height: 26}}
+              labelStyle={{color: 'white'}}
+              iconStyle={{fill: 'white'}}
               onClick={(event) => onCheckClick(event, row.uuid)}  
             />
           </TableCell>
@@ -95,11 +121,14 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
             </IconButton>
           </TableCell>
           <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} component="th" scope="row">
-            {row.name}
+            {row.display_name}
           </TableCell>
-          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.calories}</TableCell>
-          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.fat}</TableCell>
-          <TableCell style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.carbs}</TableCell>
+          <TableCell className={styles.cell} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{niceDate(row.date)}</TableCell>
+          <TableCell className={styles.filesize} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{niceBytes(row.size)}</TableCell>
+          <TableCell className={[styles.cell, styles.tchover]} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">
+            <div className={styles.access}>open <LockOpenIcon/></div>
+            <SaveAltIcon className={styles.download}/>
+          </TableCell>
           <TableCell className={styles.tchover} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.protein}</TableCell>
         </TableRow>
         <TableRow>
@@ -110,7 +139,22 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
                   Info
                 </Typography>
                 <div>
-                  This is just a small div.
+                  Name: {row.name}
+                  <br/>
+                  Display Name: {row.display_name}
+                  <br/>
+                  UUID: {row.uuid}
+                  <br/>
+                  Creation Date: {niceDate(row.date)}
+                  <br/>
+                  Accessibility: {row.accessibility}
+                  <br/>
+                  Owner: {row.owner_name}
+                  <br/>
+                  Visibility: {row.visibility}
+                  <br/>
+                  File Size: {niceBytes(row.size)}
+
                 </div>
               </Box>
             </Collapse>
@@ -141,13 +185,14 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
 
 function FeatureTable() {
 
+  const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState([]);
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
+    if(event.target.checked){
       const newSelecteds = rows.map((n) => n.uuid);
       setSelected(newSelecteds);
       return;
@@ -188,6 +233,7 @@ function FeatureTable() {
       const res = await fetch("http://localhost:5000/api/file");
       const files = await res.json();
       console.log(files);
+      setRows(files);
     };
     fetchData();
   }, []);
@@ -201,6 +247,7 @@ function FeatureTable() {
           <TableRow style={{height: 20, paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             <TableCell padding="checkbox">
               <Checkbox
+                className={styles.check}
                 color="primary"
                 indeterminate={selected.length > 0 && selected.length < rows.length}
                 checked={rows.length > 0 && selected.length === rows.length}
@@ -223,7 +270,7 @@ function FeatureTable() {
             .map((row) => (
               <Row 
                 style={{height: 26}} 
-                key={row.name} 
+                key={row.uuid} 
                 row={row}
                 selected={selected}
                 onCheckClick={handleClick}  

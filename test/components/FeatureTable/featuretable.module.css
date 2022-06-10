@@ -1,0 +1,37 @@
+.cell{
+    font-weight: 100;
+}
+
+.tr:hover{
+    background-color: rgb(252, 252, 247);
+}
+
+.tchover{
+    opacity: 1;
+}
+
+.access{
+    display: inline;
+}
+
+.tr:hover .access{
+    display: none;
+}
+
+.download{
+    display: none;
+    cursor: pointer;
+}
+
+.tr:hover .download{
+    display: inline;
+}
+
+.tr:hover .tchover{
+    opacity: 1;
+}
+
+.check{
+    boxSizing: "border-box";
+    height: 26;
+}
