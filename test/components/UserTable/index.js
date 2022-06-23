@@ -10,6 +10,8 @@ import UserEdit from "./../UserEdit/index";
 import DatatableUsers from "./../DatatableUsers";
 import Loading from "./../Loading";
 
+import { Config } from '../../config/Config.js'; 
+
 const UserTable = () => {
   var init_state = {
     first_name: "",
@@ -36,7 +38,7 @@ const UserTable = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const res = await fetch("http://localhost:5000/api/user");
+      const res = await fetch(Config["api_url"]+"/api/user");
       const users = await res.json();
       setUsers(users);
       setUser(users[0]);
@@ -45,15 +47,12 @@ const UserTable = () => {
   }, []);
 
   const editUser = (user) => {
-    console.log("Edit this please:");
-
     tempUser.id = user.id;
     tempUser.first_name = user.first_name;
     tempUser.last_name = user.last_name;
     tempUser.affiliation = user.affiliation;
     tempUser.email = user.email;
     tempUser.roles = user.roles;
-    console.log(tempUser);
     setUser(user);
   };
 
@@ -80,7 +79,7 @@ const UserTable = () => {
       },
     };
 
-    fetch("http://localhost:5000/api/user", options)
+    fetch(Config["api_url"]+"/api/user", options)
       .then((res) => res.json())
       .then((res) => {
         user.roles = [];

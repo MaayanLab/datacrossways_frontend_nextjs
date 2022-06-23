@@ -27,7 +27,7 @@ export default function Signin() {
           </div>
           <br />
           <br />
-          <Link href="http://localhost:5000/login">
+          <Link href="/login">
             <GoogleButton>Sign in with Google</GoogleButton>
           </Link>
           <br />

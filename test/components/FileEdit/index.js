@@ -10,6 +10,8 @@ import AutocompleteCollections from "../AutocompleteCollections";
 import AutocompleteOwners from "../AutocompleteOwners";
 import AutocompleteRoles from "../AutocompleteRoles";
 
+import { Config } from '../../config/Config.js'; 
+
 import Switch from "react-switch";
 
 const FileEdit = ({ file }) => {
@@ -52,12 +54,12 @@ const FileEdit = ({ file }) => {
 
   useEffect(() => {
     const fetchCollections = async () => {
-      const res = await fetch("http://localhost:5000/api/collection");
+      const res = await fetch(Config["api_url"]+"/api/collection");
       setCollections(await res.json());
     };
 
     const fetchOwners = async () => {
-      const res = await fetch("http://localhost:5000/api/user");
+      const res = await fetch(Config["api_url"]+"/api/user");
       setOwners(await res.json());
     };
 

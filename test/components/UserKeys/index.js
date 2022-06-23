@@ -7,6 +7,8 @@ import axios from "axios";
 
 import Alert from "../../components/Alert";
 
+import { Config } from '../../config/Config.js'; 
+
 const customStyles = {
     head: {
       style: {
@@ -48,14 +50,14 @@ const UserKeys = ({ user }) => {
     const [expirationTime, setexpirationTime] = useState(1440);
 
     const fetchKeys = async () => {
-        const res = await fetch("http://localhost:5000/api/accesskey");
+        const res = await fetch(Config["api_url"]+"/api/accesskey");
         const key_res = await res.json();
         setMyKeys(key_res);
     };
 
     const deleteKey = (keyinfo) => {
         const delKey = async () => {
-            const res = await fetch("http://localhost:5000/api/accesskey/"+keyinfo["id"], {'method': 'DELETE'});
+            const res = await fetch(Config["api_url"]+"/api/accesskey/"+keyinfo["id"], {'method': 'DELETE'});
             fetchKeys();
         };
         delKey();
@@ -124,7 +126,7 @@ const UserKeys = ({ user }) => {
 
     const create_access_key = () => {
         const createKey = async () => {
-            const res = await fetch("http://localhost:5000/api/accesskey/"+expirationTime, {'method': 'POST'});
+            const res = await fetch(Config["api_url"]+"/api/accesskey/"+expirationTime, {'method': 'POST'});
             fetchKeys();
         };
         createKey();

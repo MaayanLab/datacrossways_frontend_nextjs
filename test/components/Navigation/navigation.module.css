@@ -1,4 +1,19 @@
 .navcontent{
     margin-left: 14px;
     margin-right: 14px;
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.isDisabled {
+    color: currentColor;
+    opacity: 0.6;
+    cursor: auto;
+    text-decoration: none;
+}
+
+.isDisabled:hover {
+    color: currentColor;
+    opacity: 0.6;
+    text-decoration: none;
 }

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {useEffect, useState} from 'react'
-import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -22,27 +21,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import Toolbar from '@mui/material/Toolbar';
 import { alpha } from '@mui/material/styles';
-import { visuallyHidden } from '@mui/utils';
 
-import DownloadIcon from '@mui/icons-material/Download';
 import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+
+import FileSaver from 'file-saver';
 
 import styles from "./featuretable.module.css";
-import { TableFooter } from '@mui/material';
-import { boxSizing } from '@mui/system';
+import { Config } from '../../config/Config.js'; 
 
-const rows3 = [
-  createData('Frozen yoghurt',"wqelknwq89", 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich',"wqelkrgtwq89", 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair',"wqelkfgh", 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake',"wqel543dr", 305, 3.7, 67, 4.3, 2.5),
-  createData('Gingerbread',"werq89", 356, 16.0, 49, 3.9, 1.5),
-  createData('Frozen yoghurt2',"wqdfgwq89", 159, 6.0, 24, 4.0, 3.99),
-  createData('Ice cream sandwich2',"wqdfgknwq89", 237, 9.0, 37, 4.3, 4.99),
-  createData('Eclair2',"wqehfghq89", 262, 16.0, 24, 6.0, 3.79),
-  createData('Cupcake2',"wqelknfgh89", 305, 3.7, 67, 4.3, 2.5)
-];
+const downloadFile = (file) => {
+  const fetchURL = async () => {
+    const res = await fetch(Config["api_url"]+"/api/file/download/"+file.id);
+    const urlres = await res.json();
+    FileSaver.saveAs(urlres.response, file.display_name);
+  
+  };
+  fetchURL();
+}
 
 function niceBytes(bytes, decimals=2, binaryUnits=false) {
   if(bytes == 0) {
@@ -91,22 +88,19 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
     const [open, setOpen] = useState(false);
     const isSelected = (name) => selected.indexOf(name) !== -1;
     const isItemSelected = isSelected(row.uuid);
-
+    console.log(row);
     return (
       <React.Fragment>
         <TableRow className={styles.tr} style={{height: 36, paddingTop: 0, paddingBottom: 0, borderTop: '1px solid #e6e8eb'}} sx={{ '& > *': { borderBottom: 'unset' } }}>
           <TableCell  style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             
           <Checkbox
-              iconStyle={{fill: 'white'}}
               color="primary"
               checked={isItemSelected}
               inputProps={{
                 'aria-labelledby': row.uuid,
               }}
               style={{boxSizing: "border-box", height: 26}}
-              labelStyle={{color: 'white'}}
-              iconStyle={{fill: 'white'}}
               onClick={(event) => onCheckClick(event, row.uuid)}  
             />
           </TableCell>
@@ -125,9 +119,31 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
           </TableCell>
           <TableCell className={styles.cell} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{niceDate(row.date)}</TableCell>
           <TableCell className={styles.filesize} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{niceBytes(row.size)}</TableCell>
-          <TableCell className={[styles.cell, styles.tchover]} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">
-            <div className={styles.access}>open <LockOpenIcon/></div>
-            <SaveAltIcon className={styles.download}/>
+          <TableCell className={`${styles.cell} ${styles.tchover}`} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">
+            {(() => {
+              if(row.permissions.indexOf("read")!=-1 || row.accessibility!="locked"){
+                return(
+                  <>
+                  <div className={styles.access}>open <LockOpenIcon/></div>
+                  <div className={styles.download}>
+                    download 
+                    <Tooltip title="Download file">
+                      <IconButton style={{boxSizing: "border-box", height: 26}}>
+                        <SaveAltIcon onClick={() => {
+                          downloadFile(row);
+                        }}/>
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  </>
+                )
+              }
+              else{
+                return(
+                  <div className={styles.noaccess}>private <LockRoundedIcon/></div>
+                )
+              }
+          })()}
           </TableCell>
           <TableCell className={styles.tchover} style={{paddingTop: 0, paddingBottom: 0, border: '0px solid black'}} align="right">{row.protein}</TableCell>
         </TableRow>
@@ -164,26 +180,8 @@ function createData(name, uuid, calories, fat, carbs, protein, price) {
     );
   }
   
-  Row.propTypes = {
-    row: PropTypes.shape({
-      calories: PropTypes.number.isRequired,
-      carbs: PropTypes.number.isRequired,
-      fat: PropTypes.number.isRequired,
-      history: PropTypes.arrayOf(
-        PropTypes.shape({
-          amount: PropTypes.number.isRequired,
-          customerId: PropTypes.string.isRequired,
-          date: PropTypes.string.isRequired,
-        }),
-      ).isRequired,
-      name: PropTypes.string.isRequired,
-      price: PropTypes.number.isRequired,
-      protein: PropTypes.number.isRequired,
-    }).isRequired,
-  };
-  
 
-function FeatureTable() {
+function FeatureTable({collection, cid}) {
 
   const [rows, setRows] = useState([]);
   const [selected, setSelected] = useState([]);
@@ -230,13 +228,12 @@ function FeatureTable() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await fetch("http://localhost:5000/api/file");
-      const files = await res.json();
-      console.log(files);
-      setRows(files);
+      if(collection){
+        setRows(collection[0]["child_files"]);
+      }
     };
     fetchData();
-  }, []);
+  }, [collection]);
 
   return (
     <>
@@ -246,6 +243,7 @@ function FeatureTable() {
         <TableHead>
           <TableRow style={{height: 20, paddingTop: 0, paddingBottom: 0, border: '0px solid black'}}>
             <TableCell padding="checkbox">
+            <Tooltip title="Select/Deselect all">
               <Checkbox
                 className={styles.check}
                 color="primary"
@@ -256,6 +254,7 @@ function FeatureTable() {
                   'aria-label': 'select all desserts',
                 }}
               />
+            </Tooltip>
             </TableCell>
             <TableCell/>
             <TableCell>Name</TableCell>

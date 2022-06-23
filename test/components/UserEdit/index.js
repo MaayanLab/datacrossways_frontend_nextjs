@@ -11,6 +11,8 @@ import { useAsyncEffect } from "use-async-effect";
 import Loading from "../Loading";
 import AutocompleteRoles from "../AutocompleteRoles";
 
+import { Config } from '../../config/Config.js'; 
+
 const UserEdit = ({ user }) => {
   function firstnameChange(event) {
     user.first_name = event.target.value;
@@ -35,19 +37,21 @@ const UserEdit = ({ user }) => {
   const [currentRoles, setCurrentRoles] = React.useState([]);
 
   useAsyncEffect(async (isActive) => {
-    const res = await fetch("http://localhost:5000/api/role");
+    const res = await fetch(Config["api_url"]+"/api/role");
     if (!isActive()) return;
     const roles = await res.json();
     if (!isActive()) return;
 
     setRoles({ roles });
     console.log("the roles");
-    console.log(roles);
+    console.log(user.roles);
     roles.map((r) => {
-      console.log(r.name, user.roles, user.roles.indexOf(r.name));
-      if (user.roles.indexOf(r.name) != -1) {
-        currentRoles.push(r);
-      }
+      user.roles.map((ur) => {
+        console.log("role:", ur, r)
+        if(r.id == ur.id){
+          currentRoles.push(r);
+        }
+      });
     });
     setCurrentRoles(currentRoles);
   }, []);

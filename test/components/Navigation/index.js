@@ -2,12 +2,22 @@
 import { NavLink, BrowserRouter as Router } from "react-router-dom";
 
 import Link from 'next/link'
-import Button from '../Button'
+//import Button from '../Button'
 
 import {Navbar, Container, Nav} from 'react-bootstrap'
 import React, { useState, useEffect} from "react";
 
+import IconButton from '@mui/material/IconButton';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import LoginIcon from '@mui/icons-material/Login';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+import Tooltip from '@mui/material/Tooltip';
+
 import styles from "./navigation.module.css"
+import Typography from '@mui/material/Typography';
+
+import { Config } from '../../config/Config.js'; 
 
 function Header() {
 
@@ -15,7 +25,7 @@ function Header() {
 
     useEffect(() => {
         const fetchMyCreds = async () => {
-          const res = await fetch("http://localhost:5000/api/i");
+          const res = await fetch(Config["api_url"]+"/api/i");
           const mycred = await res.json();
           if(mycred.id){
             console.log("mycreds",mycred)  
@@ -43,8 +53,11 @@ function Header() {
 
                 <Nav className="me-auto">
                     <Nav.Link href="/">Home</Nav.Link>
-                    <Nav.Link href="/data">Data Collections</Nav.Link>
-                    <Nav.Link href="/myfiles">My Files</Nav.Link>
+                    {mycreds ? (<Nav.Link href="/data">Data Collections</Nav.Link>) 
+                    : (<Nav.Link className={styles.isDisabled}>Data Collections</Nav.Link>)}
+                    {mycreds ? (<Nav.Link href="/myfiles">My Files</Nav.Link>) 
+                    : (<Nav.Link className={styles.isDisabled}>My Files</Nav.Link>)}
+
                     {(() => {
                         if(mycreds != undefined){
                             if(mycreds["admin"]){
@@ -63,14 +76,30 @@ function Header() {
                                 const t = "Hello, "+mycreds['first_name']+" "+mycreds['last_name']
                                 return(
                                     <>
-                                    {t} 
-                                    <Link href="/logout"><button>Logout</button></Link>
+                                        {t}
+                                        <Link href="/logout">
+                                            <Tooltip title="Logout">
+                                            <IconButton>
+                                                <LogoutIcon>Logout</LogoutIcon>
+                                            </IconButton>
+                                            </Tooltip>
+                                        </Link>
+                                    
                                     </>
                                 )
                             }
                             else{
                                 return(
-                                    <Link href="/login"><Button>Login</Button></Link>
+                                    <>
+                                    Login
+                                    <Link href="/login">
+                                        <Tooltip title="Login">
+                                        <IconButton>
+                                           <LoginIcon>Login</LoginIcon>
+                                        </IconButton>
+                                        </Tooltip>
+                                    </Link>
+                                    </>
                                 )
                             }
                         })()}

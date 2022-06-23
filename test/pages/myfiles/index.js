@@ -11,19 +11,21 @@ import UserKeys from "../../components/UserKeys";
 import Footer from "../../components/Footer";
 import Navigation from "../../components/Navigation";
 
+import { Config } from '../../config/Config.js'; 
+
 export default function MyFiles() {
 
   const [mycreds, setMyCreds] = useState()
   
   useEffect(() => {
     const fetchMyCreds = async () => {
-      const res = await fetch("http://localhost:5000/api/i");
+      const res = await fetch(Config["api_url"]+"/api/i");
       const mycred = await res.json();
       if(mycred.id){
         setMyCreds(mycred);
       }
       else{
-        window.location.href = "http://localhost:5000/login";
+        window.location.href = Config["api_url"]+"/login";
       }
     };
     fetchMyCreds();

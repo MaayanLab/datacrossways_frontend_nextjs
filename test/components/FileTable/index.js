@@ -9,7 +9,7 @@ import Alert from '../Alert'
 import Datatable from "../Datatable";
 
 import styles from "./filetable.module.css";
-
+import { Config } from '../../config/Config.js'; 
 
 function FileTable() {
   const [posts, setPosts] = useState([]);
@@ -27,7 +27,7 @@ function FileTable() {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/api/file");
+      const res = await fetch(Config["api_url"]+"/api/file");
       const files = await res.json();
       setPosts(files);
       setLoading(false);
@@ -74,7 +74,7 @@ function FileTable() {
         method: "DELETE"
       }
       console.log("delete file", deleteFile);
-      const res = await fetch("http://localhost:5000/api/file/"+deleteFile["id"], options)
+      const res = await fetch(Config["api_url"]+"/api/file/"+deleteFile["id"], options)
       const result = await res.json();
       setDataReload(deleteFile)
 
@@ -122,7 +122,7 @@ function FileTable() {
       },
     };
 
-    fetch("http://localhost:5000/api/file", options)
+    fetch(Config["api_url"]+"/api/file", options)
       .then((res) => res.json())
       .then((res) => {
         setPopupMessages({

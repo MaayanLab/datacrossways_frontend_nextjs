@@ -13,6 +13,8 @@ import { ProgressBar } from "react-bootstrap";
 
 import Alert from "../../components/Alert";
 
+import { Config } from '../../config/Config.js'; 
+
 const Upload = ({ oncomplete }) => {
   
   const [files, setFiles] = useState([]);
@@ -78,7 +80,7 @@ const Upload = ({ oncomplete }) => {
     }
   }, [down, files]);
 
-  var base_url = "http://localhost:5000/api";
+  var base_url = Config["api_url"]+"/api";
 
   const [bufferFile, setBufferFile] = useState([]);
 
