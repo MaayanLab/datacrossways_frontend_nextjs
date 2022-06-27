@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'next/image';
 import styles from './footer.module.css'
 
 const Footer = ({ children, ...rest }) => {
