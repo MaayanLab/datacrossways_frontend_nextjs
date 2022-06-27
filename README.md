@@ -1,6 +1,14 @@
-# Datacrossways frontend
+# Datacrossways Frontend
 
 This is the Datacrossways REACT frontend.
+
+## Running locally for development
+
+The frontend relies on the API backend of Datacrossways, and a Postgresql database. To run the frontend individually do the following:
+
+```
+git clone https://github.com/MaayanLab/nextjatest.git
+```
 
 run:
 
