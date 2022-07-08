@@ -997,32 +997,69 @@
                     "role"
                 ],
                 "summary": "Update role",
-                "description": "Update role.",
+                "description": "Update role with matching ID. The input **overwrite** is by default set to **false**. In this mode the policies in the policy array are added to the existing policies. If **overwrite** is **true** replace policy array with new array.",
                 "produces": [
                     "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Role information",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "overwrite": {
+                                    "type": "boolean",
+                                    "description": "If true remove all existing policies before adding new policies. E.g. for empty policy list remove all policies from role."
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Role"
+                                }
+                            },
+                            "example": {
+                                "overwrite": true,
+                                "role": {
+                                    "id": 6,
+                                    "name": "new_policy",
+                                    "policies": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ]
+                                }
+                            },
+                            "required": ["role"]
+                        }
+                    }
                 ],
                 "responses": {
                     "200": {
                         "description": "**successful operation** when role was updated",
                         "schema": {
-                            "roles": {
-                                "$ref": "#/definitions/RoleList"
+                            "type": "object",
+                            "properties": {
+                                "overwrite": {
+                                    "type": "boolean"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/RoleList"
+                                }
                             },
                             "example": {
-                                "roles": [
-                                    {
-                                        "id": 1,
-                                        "name": "admin"
-                                    },
-                                    {
-                                        "id": 2,
-                                        "name": "collection_a_lister"
-                                    },
-                                    {
-                                        "id": 3,
-                                        "name": "collection_a_reader"
-                                    }
-                                ]
+                                "overwrite": true,
+                                "role": {
+                                    "id": 6,
+                                    "name": "new_policy",
+                                    "policies": [
+                                        1,
+                                        2,
+                                        3,
+                                        4
+                                    ]
+                                }
                             }
                         }
                     },
@@ -1092,10 +1129,21 @@
                             "properties": {
                                 "message": {
                                     "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Role"
                                 }
                             },
                             "example": {
-                                "message": "role deleted"
+                                "message": "role deleted",
+                                "role": {
+                                    "id": 6,
+                                    "name": "new_policy",
+                                    "policies": [
+                                        1,
+                                        2
+                                    ]
+                                }
                             }
                         }
                     },

@@ -42,6 +42,8 @@ const UserEdit = ({ user }) => {
     const roles = await res.json();
     if (!isActive()) return;
 
+    roles = roles["roles"]
+    console.log(roles)
     setRoles({ roles });
     console.log("the roles");
     console.log(user.roles);
