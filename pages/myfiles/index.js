@@ -25,7 +25,7 @@ export default function MyFiles() {
         setMyCreds(mycred);
       }
       else{
-        window.location.href = Config["api_url"]+"api/user/login";
+        window.location.href = Config["api_url"]+"/api/user/login";
       }
     };
     fetchMyCreds();
