@@ -22,7 +22,7 @@ const CollectionView = () => {
   const [mycreds, setMyCreds] = useState()
   useEffect(() => {
     const fetchMyCreds = async () => {
-        const res = await fetch(Config["api_url"]+"/api/i");
+        const res = await fetch(Config["api_url"]+"/api/user/i");
         const mycred = await res.json();
         if(mycred.id){
         console.log("mycreds",mycred)

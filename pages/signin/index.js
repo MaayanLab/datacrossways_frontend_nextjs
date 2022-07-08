@@ -27,7 +27,7 @@ export default function Signin() {
           </div>
           <br />
           <br />
-          <Link href="/login">
+          <Link href="api/user/login">
             <GoogleButton>Sign in with Google</GoogleButton>
           </Link>
           <br />

@@ -82,7 +82,7 @@ function FileTableUser(user) {
     const fetchURL = async () => {
       const res = await fetch(Config["api_url"]+"/api/file/download/"+file.id);
       const urlres = await res.json();
-      FileSaver.saveAs(urlres.response, file.display_name);
+      FileSaver.saveAs(urlres.url, file.display_name);
     
     };
     fetchURL();

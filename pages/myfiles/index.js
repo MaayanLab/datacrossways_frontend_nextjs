@@ -19,13 +19,13 @@ export default function MyFiles() {
   
   useEffect(() => {
     const fetchMyCreds = async () => {
-      const res = await fetch(Config["api_url"]+"/api/i");
+      const res = await fetch(Config["api_url"]+"/api/user/i");
       const mycred = await res.json();
       if(mycred.id){
         setMyCreds(mycred);
       }
       else{
-        window.location.href = Config["api_url"]+"/login";
+        window.location.href = Config["api_url"]+"api/user/login";
       }
     };
     fetchMyCreds();

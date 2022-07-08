@@ -25,7 +25,7 @@ function Header() {
 
     useEffect(() => {
         const fetchMyCreds = async () => {
-          const res = await fetch(Config["api_url"]+"/api/i");
+          const res = await fetch(Config["api_url"]+"/api/user/i");
           const mycred = await res.json();
           if(mycred.id){
             console.log("mycreds",mycred)  
@@ -77,7 +77,7 @@ function Header() {
                                 return(
                                     <>
                                         {t}
-                                        <Link href="/logout">
+                                        <Link href="api/user/logout">
                                             <Tooltip title="Logout">
                                             <IconButton>
                                                 <LogoutIcon>Logout</LogoutIcon>
@@ -92,7 +92,7 @@ function Header() {
                                 return(
                                     <>
                                     Login
-                                    <Link href="/login">
+                                    <Link href="api/user/login">
                                         <Tooltip title="Login">
                                         <IconButton>
                                            <LoginIcon>Login</LoginIcon>
