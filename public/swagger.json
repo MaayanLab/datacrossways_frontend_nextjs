@@ -73,7 +73,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -125,7 +125,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -183,7 +183,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -272,7 +272,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -349,7 +349,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -464,7 +464,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -559,7 +559,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -654,7 +654,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -766,7 +766,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -864,7 +864,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -880,7 +880,7 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Role information",
+                        "description": "Role information including **rolename** and an **array of policy IDs**. Role IDs are optional and can later be added by modifying the role.",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -986,7 +986,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -1005,7 +1005,7 @@
                     {
                         "in": "body",
                         "name": "body",
-                        "description": "Role information",
+                        "description": "Role information and **overwrite** setting.",
                         "required": true,
                         "schema": {
                             "type": "object",
@@ -1094,7 +1094,7 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -1178,7 +1178,1182 @@
                 },
                 "security": [
                     {
-                        "datacrossway_auth": [
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/policy":{
+            "get": {
+                "tags": [
+                    "policy"
+                ],
+                "summary": "List all policies",
+                "description": "List all polcies.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when policies were listed",
+                        "schema": {
+                            "policies": {
+                                "$ref": "#/definitions/PoliciyList"
+                            },
+                            "example": {
+                                "polcies": [
+                                  {
+                                    "id": 1,
+                                    "action": "read",
+                                    "effect": "allow",
+                                    "creation_date": "Thu, 30 Jun 2022 11:42:24 GMT",
+                                    "collections": [1,2],
+                                    "files": [8,9]
+                                  },
+                                  {
+                                    "id": 2,
+                                    "action": "write",
+                                    "effect": "allow",
+                                    "creation_date": "Thu, 30 Jun 2022 11:42:24 GMT",
+                                    "collections": [1,2],
+                                    "files": [8]
+                                  }
+                                ]
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to list policies",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to list policies"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while listing policies",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to list policies"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "policy"
+                ],
+                "summary": "Create policy",
+                "description": "Create new policy. Policies can not be modified once they are created. Instead attach new policies to roles if user credentials need updating.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Policy information including **policyname** and an **array of collection IDs** and **array of file IDs** as well as **action (list, read, write)**.",
+                        "required": true,
+                        "schema": {
+                            "policy": {
+                                "$ref": "#/definitions/Policy"
+                            },
+                            "example": {
+                                "action": "read",
+                                "effect": "allow",
+                                "collections": [
+                                    1,
+                                    2,
+                                    6
+                                ],
+                                "files": [
+                                    3,
+                                    6,
+                                    19
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when policy was created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Policy"
+                                }
+                            },
+                            "example": {
+                                "message": "policy created",
+                                "role": {
+                                    "id": 8,
+                                    "name": "test_policy",
+                                    "policies": [
+                                    {
+                                        "action": "list",
+                                        "collections": [
+                                        1
+                                        ],
+                                        "creation_date": "Thu, 30 Jun 2022 13:42:22 GMT",
+                                        "effect": "allow",
+                                        "files": [],
+                                        "id": 1
+                                    },
+                                    {
+                                        "action": "read",
+                                        "collections": [
+                                        2
+                                        ],
+                                        "creation_date": "Thu, 30 Jun 2022 13:42:22 GMT",
+                                        "effect": "allow",
+                                        "files": [],
+                                        "id": 2
+                                    }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to create policy",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to create policy"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while creating policy",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to create policy"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/policy/{policy_id}":{
+            "delete": {
+                "tags": [
+                    "policy"
+                ],
+                "summary": "Delete policy",
+                "description": "To delete policy the user requires admin rights.",
+                "parameters": [
+                    {
+                        "name": "policy_id",
+                        "in": "path",
+                        "description": "The policy ID for the policy to be deleted.",
+                        "required": true,
+                        "type": "integer",
+                        "default": 1
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when policy was deleted",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Policy"
+                                }
+                            },
+                            "example": {
+                                "message": "policy deleted",
+                                "policy": {
+                                    "id": 2,
+                                    "action": "read",
+                                    "creation_date": "Thu, 30 Jun 2022 13:42:22 GMT",
+                                    "effect": "allow",
+                                    "collections": [
+                                        1,
+                                        2,
+                                        6
+                                    ],
+                                    "files": [
+                                        3,
+                                        6,
+                                        19
+                                    ]       
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to delete policy",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to delete policy"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during policy deletion",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to delete policy"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/user":{
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "List all users",
+                "description": "List all users.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when users were listed",
+                        "schema": {
+                            "users": {
+                                "$ref": "#/definitions/UserList"
+                            },
+                            "example": {
+                                "users": [
+                                    {
+                                      "affiliation": "Mount Sinai Hospital",
+                                      "collections": [
+                                        1,
+                                        2,
+                                        3
+                                      ],
+                                      "creation_date": "Mon, 11 Jul 2022 13:23:44 GMT",
+                                      "email": "alder.lacnn@mssm.edu",
+                                      "files": [
+                                        1,
+                                        2,
+                                        11
+                                      ],
+                                      "first_name": "Alexander",
+                                      "id": 1,
+                                      "last_name": "Lachmann",
+                                      "name": "Alexander Lachmann",
+                                      "roles": [
+                                        1,
+                                        2,
+                                        3
+                                      ],
+                                      "uuid": "4swYp34gasdBX"
+                                    },
+                                    {
+                                      "affiliation": "Mount Sinai Hospital",
+                                      "collections": [],
+                                      "creation_date": "Mon, 11 Jul 2022 13:23:44 GMT",
+                                      "email": "u8asdd@mssm.edu",
+                                      "files": [
+                                        3,
+                                        4,
+                                        5,
+                                        6
+                                      ],
+                                      "first_name": "Daniel",
+                                      "id": 2,
+                                      "last_name": "Clarke",
+                                      "name": "Daniel Clarke",
+                                      "roles": [],
+                                      "uuid": "7MasdNeCgD"
+                                    },
+                                    {
+                                      "affiliation": "Mount Sinai Hospital",
+                                      "collections": [
+                                        2
+                                      ],
+                                      "creation_date": "Mon, 11 Jul 2022 13:23:44 GMT",
+                                      "email": "aas.maasan@mssm.edu",
+                                      "files": [
+                                        7,
+                                        8,
+                                        9,
+                                        10
+                                      ],
+                                      "first_name": "Avi",
+                                      "id": 3,
+                                      "last_name": "Ma'ayan",
+                                      "name": "Avi Ma'ayan",
+                                      "roles": [
+                                        2
+                                      ],
+                                      "uuid": "3AyaasdLZ7uH"
+                                    }
+                                  ]
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to list users",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to list users"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while listing users",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to list users"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create user",
+                "description": "Create new user.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User information including **file IDs**, **role IDs**, and **collection IDs**.",
+                        "required": true,
+                        "schema": {
+                            "user": {
+                                "$ref": "#/definitions/User"
+                            },
+                            "example": {
+                                "name": "Jane Doe",
+                                "first_name": "Jane",
+                                "last_name": "Doe",
+                                "affiliation": "Mount Sinai Hospital",
+                                "email": "jd@mssm.edu",
+                                "collections": [
+                                    1,
+                                    2
+                                ],
+                                "files": [
+                                    1,
+                                    2
+                                ],
+                                "roles": [
+                                    2,
+                                    3
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when role was created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Role"
+                                }
+                            },
+                            "example": {
+                                "message": "user created successfully",
+                                "user": {
+                                    "affiliation": "Mount Sinai Hospital",
+                                    "collections": [
+                                        1,
+                                        2
+                                    ],
+                                    "creation_date": "Mon, 11 Jul 2022 23:28:15 GMT",
+                                    "email": "jd8@mssm.edu",
+                                    "files": [
+                                        1,
+                                        2
+                                    ],
+                                    "first_name": "Jane",
+                                    "id": 9,
+                                    "last_name": "Doe",
+                                    "name": "Jane Doe",
+                                    "roles": [
+                                        2,
+                                        3
+                                    ],
+                                    "uuid": "7CeD2UAQSiwF"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to create users",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to create users"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while creating user",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to create user"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user",
+                "description": "Update user with matching ID.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "User information and **overwrite** setting.",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            },
+                            "example": {
+                                "affiliation": "Mount Sinai Hospital",
+                                "creation_date": "Mon, 11 Jul 2022 23:28:15 GMT",
+                                "email": "jd8@mssm.edu",
+                                "first_name": "Jane Updated",
+                                "id": 6,
+                                "last_name": "Doe",
+                                "name": "Jane Updated Doe",
+                                "files": [
+                                    1,
+                                    2,
+                                    3,
+                                    4
+                                ],
+                                "collections": [
+                                    1,
+                                    2
+                                ],
+                                "roles": [
+                                    2,
+                                    3
+                                ],
+                                "uuid": "7CeD2UAQSiwF"
+                            },
+                            "required": ["id"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when user was updated",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "overwrite": {
+                                    "type": "boolean"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/UserList"
+                                }
+                            },
+                            "example": {
+                                "affiliation": "Mount Sinai Hospital",
+                                "creation_date": "Mon, 11 Jul 2022 23:28:15 GMT",
+                                "email": "jd8@mssm.edu",
+                                "first_name": "Jane Updated",
+                                "id": 6,
+                                "last_name": "Doe",
+                                "name": "Jane Updated Doe",
+                                "files": [
+                                    1,
+                                    2,
+                                    3,
+                                    4
+                                ],
+                                "collections": [
+                                    1,
+                                    2
+                                ],
+                                "roles": [
+                                    2,
+                                    3
+                                ],
+                                "uuid": "7CeD2UAQSiwF"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to update user",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to update user"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while updating user",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to update user"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/user/{user_id}":{
+            "delete": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Delete user",
+                "description": "To delete user the user requires admin rights.",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "The user ID for the user to be deleted.",
+                        "required": true,
+                        "type": "integer",
+                        "default": 1
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "203": {
+                        "description": "**successful operation** when user was deleted",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            },
+                            "example": {
+                                "message": "role deleted successfully",
+                                "role": {
+                                    "affiliation": "Mount Sinai Hospital",
+                                    "collections": [
+                                    1,
+                                    2
+                                    ],
+                                    "creation_date": "Mon, 11 Jul 2022 23:28:15 GMT",
+                                    "email": "jd8@mssm.edu",
+                                    "files": [
+                                    1,
+                                    2
+                                    ],
+                                    "first_name": "Jane",
+                                    "id": 9,
+                                    "last_name": "Doe",
+                                    "name": "Jane Doe",
+                                    "roles": [
+                                    2,
+                                    3
+                                    ],
+                                    "uuid": "7CeD2UAQSiwF"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to delete user",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to delete user"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during user deletion",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to delete user"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/collection":{
+            "get": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "List all collections",
+                "description": "List all collections.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when collections were listed",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "collection": {
+                                    "$ref": "#/definitions/CollectionList"
+                                }
+                            },
+                            "example": {
+                                "collections": [
+                                    {
+                                        "accessibility": "open",
+                                        "collections": [
+                                            2
+                                        ],
+                                        "creation_date": "Tue, 12 Jul 2022 12:45:01 GMT",
+                                        "description": null,
+                                        "files": [
+                                            1,
+                                            2,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11
+                                        ],
+                                        "id": 1,
+                                        "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/collection.jpg",
+                                        "name": "root",
+                                        "owner_id": 1,
+                                        "parent_collection_id": null,
+                                        "uuid": "7fbx743j8KNQ",
+                                        "visibility": "visible"
+                                    },
+                                    {
+                                        "accessibility": "open",
+                                        "collections": [],
+                                        "creation_date": "Tue, 12 Jul 2022 12:45:01 GMT",
+                                        "description": null,
+                                        "files": [
+                                            3,
+                                            4,
+                                            5,
+                                            6
+                                        ],
+                                        "id": 2,
+                                        "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/collection.jpg",
+                                        "name": "lyme_data",
+                                        "owner_id": 2,
+                                        "parent_collection_id": 1,
+                                        "uuid": "6EFUJJ7q5CuT",
+                                        "visibility": "visible"
+                                    }
+                                ],
+                                "message": "collections listed successfully"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if collection does not have permission to list collections",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to list collections"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while listing collections",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to list collections"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "Create collection",
+                "description": "Create new collection.",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Collection information including **file IDs** and **collection IDs**.",
+                        "required": true,
+                        "schema": {
+                            "collection": {
+                                "$ref": "#/definitions/Collection"
+                            },
+                            "example": {
+                                "accessibility": "locked",
+                                "collections": [],
+                                "description": null,
+                                "files": [
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/collection.jpg",
+                                "name": "new_collection",
+                                "visibility": "visible"
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when collection was created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "collection": {
+                                    "$ref": "#/definitions/Collection"
+                                }
+                            },
+                            "example": {
+                                "message": "collection created successfully",
+                                "collection": {
+                                    "accessibility": "open",
+                                    "collections": [],
+                                    "creation_date": "Tue, 12 Jul 2022 12:45:01 GMT",
+                                    "description": null,
+                                    "files": [
+                                        3,
+                                        4,
+                                        5,
+                                        6
+                                    ],
+                                    "id": 4,
+                                    "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/collection.jpg",
+                                    "name": "lyme_data",
+                                    "owner_id": 2,
+                                    "parent_collection_id": 1,
+                                    "uuid": "6EFKSJ7q5CuT",
+                                    "visibility": "visible"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if collection does not have permission to create collections",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to create collections"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while creating collection",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to create collection"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "Update collection",
+                "description": "Update collection with matching ID. **files** and **collections** are added to the existing files and collections. To remove files or collections, move them or delete them directly.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "Collection information and **overwrite** setting.",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "collection": {
+                                    "$ref": "#/definitions/Collection"
+                                }
+                            },
+                            "example": {
+                                "accessibility": "closed",
+                                "collections": [],
+                                "description": null,
+                                "files": [
+                                    7
+                                ],
+                                "id": 4,
+                                "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/newimage.jpg",
+                                "name": "updated_lyme_data",
+                                "owner_id": 2,
+                                "parent_collection_id": 1,
+                                "visibility": "hidden"
+                            },
+                            "required": ["id"]
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when collection was updated",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "overwrite": {
+                                    "type": "boolean"
+                                },
+                                "collection": {
+                                    "$ref": "#/definitions/Collection"
+                                }
+                            },
+                            "example": {
+                                "message": "collection updated successfully",
+                                "collection": {
+                                    "accessibility": "closed",
+                                    "collections": [],
+                                    "description": null,
+                                    "files": [
+                                        7
+                                    ],
+                                    "id": 4,
+                                    "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/newimage.jpg",
+                                    "name": "updated_lyme_data",
+                                    "creation_date": "Tue, 12 Jul 2022 12:45:01 GMT",
+                                    "owner_id": 2,
+                                    "parent_collection_id": 1,
+                                    "visibility": "hidden",
+                                    "uuid": "7fbx743j8KNQ"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if collection does not have permission to update collection",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to update collection"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while updating collection",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to update collection"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/collection/{collection_id}":{
+            "delete": {
+                "tags": [
+                    "collection"
+                ],
+                "summary": "Delete collection",
+                "description": "To delete collection the user requires admin rights.",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "The collection ID for the collection to be deleted.",
+                        "required": true,
+                        "type": "integer",
+                        "default": 1
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "203": {
+                        "description": "**successful operation** when collection was deleted",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "collection": {
+                                    "$ref": "#/definitions/Collection"
+                                }
+                            },
+                            "example": {
+                                "accessibility": "open",
+                                "collections": [],
+                                "creation_date": "Tue, 12 Jul 2022 12:45:01 GMT",
+                                "description": null,
+                                "files": [
+                                    3,
+                                    4,
+                                    5,
+                                    6
+                                ],
+                                "id": 2,
+                                "image_url": "https://datacrosswayspublic.s3.amazonaws.com/collections/collection.jpg",
+                                "name": "lyme_data",
+                                "owner_id": 2,
+                                "parent_collection_id": 1,
+                                "uuid": "6EFUJJ7q5CuT",
+                                "visibility": "visible"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if collection does not have permission to delete collection",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to delete collection"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during collection deletion",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to delete collection"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
                             "admin"
                         ]
                     }
@@ -1187,15 +2362,13 @@
         }
     },
     "securityDefinitions": {
-        "datacrossway_auth": {
+        "datacrossways_auth": {
             "type": "apiKey",
             "in": "header",
             "name": "x-api-key",
-            "description": "Datacrossways supports two types of user authentification. For users of the graphical user frontend the method of authentification is **Google OAuth**. First [log into account](/api/user/login) to use protected endpoints through the Swagger UI. To access the API programatically you can use a user **access key** which can be generated through the Datacrossways interface. The key will have identical user rights as the user who created it.",
+            "description": "Datacrossways supports two types of user authentification. For users of the graphical user frontend the method of authentification is **Google OAuth**. First [log into account](/api/user/login) to use protected endpoints through the Swagger UI. To access the API programatically you can use a user **access key** which can be generated through the Datacrossways interface. The key will have identical user rights as the user who created it. Most endpoints require **admin** privileges. Uploading files requires users to be attached to the **uploader** role.",
             "scopes": {
-                "admin": "admin rights to api",
-                "user": "regular user",
-                "uploader": "regular user with upload rights"
+                "admin": "admin rights to api"
             }
         }
     },
@@ -1414,32 +2587,36 @@
                     "type": "integer",
                     "format": "int64"
                 },
-                "username": {
+                "name": {
                     "type": "string"
                 },
-                "firstName": {
+                "first_name": {
                     "type": "string"
                 },
-                "lastName": {
+                "last_name": {
                     "type": "string"
                 },
                 "email": {
                     "type": "string"
                 },
-                "password": {
+                "affiliation": {
                     "type": "string"
                 },
-                "phone": {
+                "creation_date": {
                     "type": "string"
                 },
-                "userStatus": {
-                    "type": "integer",
-                    "format": "int32",
-                    "description": "User Status"
+                "uuid": {
+                    "type": "string"
+                },
+                "collections": {
+                    "$ref": "#/definitions/CollectionList"
+                },
+                "files": {
+                    "$ref": "#/definitions/FileList"
+                },
+                "roles": {
+                    "$ref": "#/definitions/RoleList"
                 }
-            },
-            "xml": {
-                "name": "User"
             }
         }
     },
