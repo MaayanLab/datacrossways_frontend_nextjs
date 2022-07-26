@@ -773,6 +773,155 @@
                 ]
             }
         },
+        "file/search": {
+            "post": {
+                "tags": [
+                    "file"
+                ],
+                "summary": "Search files on metadata queries",
+                "description": "The search takes a JSON object as query. It works similar to GraphQL queries and tries to match any metadata entry that contains the same key structure and if values are specified the given values. If the value of a key is set to **null**, the file is required to have the key in the metadata with any value. Approximate string matching of variables is possible (e.g. %RNA% would match any string value containing RNA)",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "File metadata query",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            },
+                            "example": {
+                                "creator": {
+                                    "name": "Alexander Lachmann"
+                                },
+                                "library_strategy": "RNA-Seq",
+                                "file_type": "fastq"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** returns the created file object",
+                        "schema": {
+                            "$ref": "#/definitions/FileList"
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during file search"
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "file/filter": {
+            "post": {
+                "tags": [
+                    "file"
+                ],
+                "summary": "List possible file filters",
+                "description": "The metadata attached to files can be used to filter and find relevant subsets. This endpoint returns all possible search parameters and the number of files each filter value is found.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** returns the file filters",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            },
+                            "example": {
+                                "filters": {
+                                    "/creator/name": {
+                                            "Alexander Lachmann": 10,
+                                            "Avi Ma'ayan": 15
+                                    }
+                                },
+                                "/subject/gender": {"female": 5027, "male": 4973}
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during file search"
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "file/annotate/{file_id}": {
+            "post": {
+                "tags": [
+                    "file"
+                ],
+                "summary": "Annotate file with meta data",
+                "description": "Attach meta data to file object.",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "description": "The file ID for the file to be annotated.",
+                        "required": true,
+                        "type": "integer",
+                        "default": 1
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "File metadata",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                            },
+                            "example": {
+                                "creator": {
+                                    "name": "Alexander Lachmann"
+                                },
+                                "library_strategy": "RNA-Seq",
+                                "file_type": "fastq"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** returns the file with new metadata annotation",
+                        "schema": {
+                            "$ref": "#/definitions/File"
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during file annotation"
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
         "/role":{
             "get": {
                 "tags": [
@@ -1926,6 +2075,164 @@
                             },
                             "example": {
                                 "message": "An error occurred when attempting to delete user"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/user/accesskey":{
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "List all user access keys",
+                "description": "List all user access keys.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when keys were listed",
+                        "schema": {
+                            "users": {
+                                "$ref": "#/definitions/KeyList"
+                            },
+                            "example": {
+                                "keys": [
+                                    {
+                                        "creation_date": "Tue, 19 Jul 2022 12:17:20 GMT",
+                                        "expiration_time": 1000,
+                                        "id": 1,
+                                        "uuid": "eLUqKTtCiQEQdYsKaHFjc9zXPwgNuYA7"
+                                      },
+                                      {
+                                        "creation_date": "Tue, 19 Jul 2022 12:19:34 GMT",
+                                        "expiration_time": 1000,
+                                        "id": 2,
+                                        "uuid": "WrTRLk5iE7iUFSxDAoxNtX6Sdl23LkVi"
+                                      }
+                                  ],
+                                "message": "keys successfully listed"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to list keys",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to list keys"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while listing keys",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to list keys"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/user/accesskey/{exp_time}":{
+            "post": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "Create key",
+                "description": "Create user API key with specified expiration time in minutes.",
+                "parameters": [
+                    {
+                        "name": "exp_time",
+                        "in": "path",
+                        "description": "The expiration time of the key in minutes.",
+                        "required": true,
+                        "type": "integer",
+                        "default": 1
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when key was created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "role": {
+                                    "$ref": "#/definitions/Key"
+                                }
+                            },
+                            "example": {
+                                "message": "key created successfully",
+                                "key": {
+                                    "creation_date": "Tue, 19 Jul 2022 12:20:40 GMT",
+                                    "expiration_time": 1000,
+                                    "id": 3,
+                                    "name": null,
+                                    "owner_id": 1,
+                                    "uuid": "aUWot8D8UkZGTWVPpWLTDwFDA3JjaPcM"
+                                  }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to create key",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to create key"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises during key generation",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to create key"
                             }
                         }
                     }
