@@ -7,11 +7,10 @@ import { Config } from '../../config/Config.js';
 const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false })
 
 export default function Rest() {
-
     return (
         <div className="Rest">
             <SwaggerUI
-                url={Config["base_url"]+'/swagger.json'}
+                url={process.env.URL+'/swagger.json'}
                 deepLinking={true}
                 displayOperationId={true}
                 filter={true}
