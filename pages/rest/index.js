@@ -11,7 +11,7 @@ export default function Rest() {
     return (
         <div className="Rest">
             <SwaggerUI
-                url={process.env.BASE_URL+'/swagger.json'}
+                url={Config["base_url"]+'/swagger.json'}
                 deepLinking={true}
                 displayOperationId={true}
                 filter={true}
