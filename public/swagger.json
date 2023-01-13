@@ -2128,6 +2128,72 @@
                 ]
             }
         },
+        "/user/i":{
+            "get": {
+                "tags": [
+                    "user"
+                ],
+                "summary": "List session user information",
+                "description": "List user information for user that is currently in the session, including special roles.",
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "**successful operation** when user is listed",
+                        "schema": {
+                            "users": {
+                                "$ref": "#/definitions/UserInfo"
+                            },
+                            "example": {
+                                    "id": 1,
+                                    "uuid": "3asdEzZRjh",
+                                    "admin": true,
+                                    "uploader": true,
+                                    "email": "alexander.lachmann@mssm.com",
+                                    "first_name": "Alexander",
+                                    "last_name": "Lachmann"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "**permission denied** returns an error if user does not have permission to list keys",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "No permission to list keys"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "**failed operation** returns an error if exception arises while listing keys",
+                        "schema": {
+                            "type": "object",
+                            "properties":{
+                                "message": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "message": "An error occurred when attempting to list keys"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "datacrossways_auth": [
+                            "admin"
+                        ]
+                    }
+                ]
+            }
+        },
         "/user/{user_id}":{
             "delete": {
                 "tags": [

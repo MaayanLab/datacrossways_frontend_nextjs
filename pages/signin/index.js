@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from "./signin.module.css";
 
 import GoogleButton from "../../components/GoogleButton";
+import Button from "../../components/Button";
 import BackLink from "../../components/BackLink";
 
 export default function Signin() {
@@ -27,8 +28,12 @@ export default function Signin() {
           </div>
           <br />
           <br />
-          <Link href="api/user/login">
+          <Link href="api/user/login/google">
             <GoogleButton>Sign in with Google</GoogleButton>
+          </Link>
+          <br />
+          <Link href="api/user/login/orcid">
+            <Button>Sign in with Orcid</Button>
           </Link>
           <br />
           <br />
